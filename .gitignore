@@ -1,0 +1,9 @@
+acvenv/
+venv/
+env/
+*.env
+__pycache__/
+*.pyc
+.vscode/
+.idea/
+models/*.onnx
