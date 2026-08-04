@@ -1,0 +1,16 @@
+Metadata-Version: 2.4
+Name: Smart-cooling-edge_AI
+Version: 0.0.1
+Summary: An edge computer vision system for smart AC energy saving
+Author: Pasindu Gunathilake
+Author-email: pasindugunathilake144@gmail.com
+Requires-Dist: flask==3.0.2
+Requires-Dist: flask-cors==4.0.0
+Requires-Dist: opencv-python==4.9.0.80
+Requires-Dist: numpy==1.26.4
+Requires-Dist: onnxruntime==1.17.1
+Requires-Dist: requests==2.31.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: requires-dist
+Dynamic: summary

@@ -1,0 +1,11 @@
+README.md
+setup.py
+Smart_cooling_edge_AI.egg-info/PKG-INFO
+Smart_cooling_edge_AI.egg-info/SOURCES.txt
+Smart_cooling_edge_AI.egg-info/dependency_links.txt
+Smart_cooling_edge_AI.egg-info/requires.txt
+Smart_cooling_edge_AI.egg-info/top_level.txt
+backend/__init__.py
+backend/app.py
+edge_node/__init__.py
+edge_node/inference.py
