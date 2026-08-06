@@ -2,6 +2,17 @@
 
 An edge computer vision and deep learning system built for real-time classroom occupancy detection and automated HVAC energy saving.
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white"/>
+  <img src="https://img.shields.io/badge/OpenCV-4.9-green?style=for-the-badge&logo=opencv&logoColor=white"/>
+  <img src="https://img.shields.io/badge/ONNX-Runtime-orange?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Ultralytics-YOLOv11-purple?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/MongoDB-Atlas-darkgreen?style=for-the-badge&logo=mongodb&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Flask-3.0.2-lightgrey?style=for-the-badge&logo=flask&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Docker-Enabled-blue?style=for-the-badge&logo=docker&logoColor=white"/>
+  <img src="https://img.shields.io/badge/License-Educational-lightgrey?style=for-the-badge"/>
+</p>
+
 ---
 
 ## 📌 Table of Contents
@@ -147,9 +158,9 @@ pip install -e .
 Create a `.env` file in the root directory with your configuration parameters:
 
 ```env
-DB_NAME="smart_cooling_db"
-COLLECTION_NAME="hvac_logs"
-MONGODB_URI="your-mongodb-atlas-connection-string-here"
+MONGODB_URI="Enter your MongoDB Atlas connection string here"
+DB_NAME="Edge_AI_Smart_Cooling"
+COLLECTION_NAME="Edge_AI_Smart_Cooling_Logs"
 
 ```
 
