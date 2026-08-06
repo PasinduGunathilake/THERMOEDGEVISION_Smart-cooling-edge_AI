@@ -28,6 +28,7 @@ list_of_dirnfiles = [
     "notebooks/experiment.ipynb",
     "app.py",                 # Flask Backend & Dashboard Stream
     "edge_streamer.py",       # Edge Node Script (Camera capture & stream)
+    "templates/index.html",
     "requirements.txt",
     "Dockerfile",
     ".env",
