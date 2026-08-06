@@ -14,7 +14,8 @@ list_of_dirnfiles = [
     "edge_simulator.py",
     "requirements.txt",
     "setup.py",
-    ".gitignore"
+    ".gitignore",
+    ".env"
 ]
 
 for filepath in list_of_dirnfiles:
