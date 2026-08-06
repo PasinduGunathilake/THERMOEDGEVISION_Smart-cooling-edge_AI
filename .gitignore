@@ -7,4 +7,5 @@ __pycache__/
 .vscode/
 .idea/
 models/*.onnx
+models/*.pt
 Frame_captures/*
