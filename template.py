@@ -24,11 +24,12 @@ list_of_dirnfiles = [
     f"{project_name}/utils/image_utils.py",
     
     # Root Level Files
-    "models/yolo11m.onnx",
+    "models",
     "notebooks/experiment.ipynb",
     "app.py",                 # Flask Backend & Dashboard Stream
     "edge_streamer.py",       # Edge Node Script (Camera capture & stream)
     "templates/index.html",
+    "resources",
     "requirements.txt",
     "Dockerfile",
     ".env",
