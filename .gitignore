@@ -9,3 +9,6 @@ __pycache__/
 models/*.onnx
 models/*.pt
 Frame_captures/*
+*.egg-info/
+build/
+dist/

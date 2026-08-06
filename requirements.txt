@@ -8,4 +8,4 @@ ipykernel
 ultralytics==8.4.115
 pymongo==4.17.0
 certifi
-dotenv
+python-dotenv

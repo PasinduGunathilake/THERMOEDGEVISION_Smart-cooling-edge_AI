@@ -12,13 +12,13 @@ setup(
         "flask-cors==4.0.0",
         "opencv-python==4.9.0.80",
         "numpy==1.26.4",
-        "onnxruntime==1.17.1",
+        "onnxruntime==1.20.0",
         "requests==2.31.0",
         "ipykernel",
-        "ultralytics==8.2.0",
+        "ultralytics==8.4.115",
         "pymongo==4.17.0",
         "certifi",
-        "dotenv"
+        "python-dotenv"
     ]
 )
 

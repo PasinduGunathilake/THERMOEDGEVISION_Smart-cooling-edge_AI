@@ -4,18 +4,35 @@ from pathlib import Path
 project_name = "Smart-cooling-edge_AI"
 
 list_of_dirnfiles = [
+    f"{project_name}/__init__.py",
+    
+    # Core Components (Inference & Smart Cooling Control)
+    f"{project_name}/components/__init__.py",
+    f"{project_name}/components/model_predictor.py",
+    f"{project_name}/components/hvac_controller.py",
+    
+    # Database Access (MongoDB)
+    f"{project_name}/dbdata_access/__init__.py",
+    f"{project_name}/dbdata_access/data_logger.py",
+    
+    # Pipeline (Main Loop)
+    f"{project_name}/pipeline/__init__.py",
+    f"{project_name}/pipeline/prediction_pipeline.py",
+    
+    # Utilities (Preprocessing & Annotations)
+    f"{project_name}/utils/__init__.py",
+    f"{project_name}/utils/image_utils.py",
+    
+    # Root Level Files
+    "models/yolo11m.onnx",
     "notebooks/experiment.ipynb",
-    "edge_node/__init__.py",
-    "edge_node/inference.py",
-    "backend/__init__.py",
-    "backend/app.py",
-    "frontend/templates/index.html",
-    "models/modelOnnx",
-    "edge_simulator.py",
+    "app.py",                 # Flask Backend & Dashboard Stream
+    "edge_streamer.py",       # Edge Node Script (Camera capture & stream)
     "requirements.txt",
+    "Dockerfile",
+    ".env",
     "setup.py",
-    ".gitignore",
-    ".env"
+    "demo.py"                 # Test Componets working correct or not
 ]
 
 for filepath in list_of_dirnfiles:
@@ -24,11 +41,11 @@ for filepath in list_of_dirnfiles:
 
     if filedir != "":
         os.makedirs(filedir, exist_ok=True)
-        print(f"creating dir: {filedir}")
+        print(f"Creating dir: {filedir}")
 
     if (not os.path.exists(filepath)) or (os.path.getsize(filepath) == 0):
         with open(filepath, "w") as f:
             pass
-            print(f"creating file: {filepath}")
+            print(f"Creating file: {filepath}")
     else:
-        print(f"dile already exists: {filename}")
+        print(f"File already exists: {filename}")
