@@ -17,6 +17,7 @@ list_of_dirnfiles = [
     
     # Pipeline (Main Loop)
     f"{project_name}/pipeline/__init__.py",
+    f"{project_name}/pipeline/inference_thread.py",
     f"{project_name}/pipeline/prediction_pipeline.py",
     
     # Utilities (Preprocessing & Annotations / Confugurations (YAML parameters reading) utility/ aviod hardcoding)
