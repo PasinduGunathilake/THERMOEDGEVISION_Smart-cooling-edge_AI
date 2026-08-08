@@ -1,210 +1,241 @@
+<div align="center">
+
 # Smart Cooling Edge AI
 
-An edge computer vision and deep learning system built for real-time classroom occupancy detection and automated HVAC energy saving.
+**Intelligent, real-time classroom occupancy detection and automated HVAC energy management at the Edge.**
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white"/>
-  <img src="https://img.shields.io/badge/OpenCV-4.9-green?style=for-the-badge&logo=opencv&logoColor=white"/>
-  <img src="https://img.shields.io/badge/ONNX-Runtime-orange?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Ultralytics-YOLOv11-purple?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/MongoDB-Atlas-darkgreen?style=for-the-badge&logo=mongodb&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Flask-3.0.2-lightgrey?style=for-the-badge&logo=flask&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Docker-Enabled-blue?style=for-the-badge&logo=docker&logoColor=white"/>
-  <img src="https://img.shields.io/badge/License-Educational-lightgrey?style=for-the-badge"/>
-</p>
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![OpenCV](https://img.shields.io/badge/OpenCV-4.9-green?style=for-the-badge&logo=opencv&logoColor=white)](https://opencv.org/)
+[![ONNX Runtime](https://img.shields.io/badge/ONNX-Runtime_GPU-orange?style=for-the-badge&logo=onnx&logoColor=white)](https://onnxruntime.ai/)
+[![Ultralytics YOLOv11](https://img.shields.io/badge/YOLOv11-Ultralytics-purple?style=for-the-badge)](https://ultralytics.com/)
+[![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas-darkgreen?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Flask](https://img.shields.io/badge/Flask-3.0.2-lightgrey?style=for-the-badge&logo=flask&logoColor=black)](https://flask.palletsprojects.com/)
+
+</div>
 
 ---
 
-## 📌 Table of Contents
+## Project Overview
 
-* [Overview](https://www.google.com/search?q=%23-overview)
-* [System Architecture](https://www.google.com/search?q=%23-system-architecture)
-* [Project Structure](https://www.google.com/search?q=%23-project-structure)
-* [Tech Stack](https://www.google.com/search?q=%23-tech-stack)
-* [Prerequisites](https://www.google.com/search?q=%23-prerequisites)
-* [Installation](https://www.google.com/search?q=%23-installation)
-* [Configuration](https://www.google.com/search?q=%23-configuration)
-* [Running the Application](https://www.google.com/search?q=%23-running-the-application)
-* [API Reference](https://www.google.com/search?q=%23-api-reference)
-* [Troubleshooting](https://www.google.com/search?q=%23-troubleshooting)
-* [License](https://www.google.com/search?q=%23-license)
+**Smart Cooling Edge AI** is a lightweight, high-performance edge computing solution designed to optimize HVAC energy consumption in smart classrooms and auditoriums. By utilizing a "Thin Edge" architecture, the system captures real-time video feeds, performs rapid AI inference using **YOLOv11 ONNX Runtime**, and dynamically regulates AC units (temperature, fan speed, louver position) based on occupancy brackets. 
 
 ---
 
-## 🧠 Overview
+### What is HVAC?
+**HVAC** stands for **Heating, Ventilation, and Air Conditioning**. In the context of this project, it refers to the automated control systems (such as air conditioners, fan speeds, and louvers) managed dynamically based on real-time classroom occupancy to maximize energy efficiency and comfort.
 
-The **Smart Cooling Edge AI** system is a lightweight, high-performance computer vision solution designed to optimize energy consumption in smart classrooms. Using a "Thin Edge" architecture, the edge device captures and streams live video feed to a central server where AI inference (via **YOLOv11 ONNX**) processes student occupancy counts. Based on dynamic occupancy brackets, the system automatically regulates HVAC parameters (temperatures, fan speeds, louver positions, and active AC units) and logs telemetry data securely to **MongoDB Atlas**.
 
----
-
-### 🛡️ Core Principles
-
-| Principle | Implementation |
-| --- | --- |
-| **Thin Edge Architecture** | Edge devices handle only capture and streaming; heavy AI inference runs on the central server. |
-| **High Performance Inference** | Utilizes ONNX Runtime (`yolo11m.onnx`) for optimized CPU inference speed. |
-| **Adaptive Image Enhancement** | Automatic CLAHE brightness adjustment for dark or shadowed classroom environments. |
-| **Intelligent HVAC Control** | Matrix-based automation regulating 4 AC units according to live student count. |
-| **Cloud Telemetry Logging** | Structured metadata and annotated frame paths logged directly to MongoDB Atlas. |
-| **Modular Design** | Clean separation of components, utilities, database access, and core pipelines. |
+All telemetry and metadata are securely logged to **MongoDB Atlas** to establish a **data flywheel** enabling **long-term analytics, future ML-driven predictive control (such as anticipating occupancy trends), and environmental footprint auditing**.
 
 ---
 
-## 🏗️ System Architecture
+## Features
 
+- **Asynchronous High-Performance Inference:** Dedicated threading for YOLOv11 ONNX inference prevents blocking the video feed, resulting in ultra-smooth real-time display (30+ FPS) while maintaining robust detection.
+- **Adaptive Image Enhancement:** Automatic CLAHE brightness adjustment for dark, shadowed, or poorly lit environments.
+- **Intelligent HVAC Automation:** Matrix-based rule engine dynamically regulates up to 4 AC units according to live student count.
+- **Cloud Telemetry Logging:** Push structured occupancy and climate control data directly to MongoDB Atlas.
+- **Thin Edge Architecture:** Designed to capture streams via edge nodes and process centrally.
+
+---
+
+## System Architecture
+
+```mermaid
+graph TD
+    subgraph Edge Layer
+        Camera[Edge Camera/Webcam] --> |HTTP MJPEG Stream| EdgeStreamer[edge_streamer.py]
+    end
+
+    subgraph Central Server
+        EdgeStreamer --> |Port 5001| App[app.py - Flask Server]
+        
+        App --> |Frames| Pipeline[PredictionPipeline]
+        
+        Pipeline --> |Full FPS| Display[Real-time OpenCV Window]
+        Pipeline -.-> |Threaded| InferenceWorker
+        
+        InferenceWorker --> |YOLOv11m| ONNX[ONNX Runtime GPU]
+        ONNX --> |BBox & Count| InferenceWorker
+        
+        InferenceWorker --> |Occupancy| HVAC[CoolingController Matrix]
+    end
+
+    subgraph Cloud Layer
+        HVAC --> |Log telemetry & annotated frames| Mongo[(MongoDB Atlas)]
+    end
 ```
-[Edge Node / Camera] 
-       │ (HTTP MJPEG Stream)
-       ▼
-[Flask Backend Server] ──► [YOLO ONNX Predictor] ──► [HVAC Controller Matrix]
-       │                                                         │
-       ├─────────────────────────────────────────────────────────┤
-       ▼                                                         ▼
-[Live Stream Frontend]                                  [MongoDB Atlas Logger]
-
-```
 
 ---
 
-## 📁 Project Structure
+## MLOps Practices Usage
 
-```
+This project strictly adheres to core **MLOps (Machine Learning Operations)** standards to ensure scalability, maintainability, and high performance in production:
+
+- **Model Optimization:** Transitioned from raw PyTorch models to **ONNX Runtime**, providing faster, hardware-agnostic inference on edge CPU/GPUs.
+- **Configuration Management:** Centralized all logic thresholds (NMS, confidence) and HVAC automation rules in `params.yaml`. This avoids hard-coded values and enables reproducible model tracking.
+- **Data Flywheel / Experiment Tracking:** Continuous logging of telemetry data and annotated images to **MongoDB Atlas**. This establishes a robust data pipeline for future model retraining, drift analysis, and dashboarding.
+- **Decoupled Architecture:** Utilizes a producer-consumer threading model to completely separate IO-bound stream display from the compute-bound YOLO inference, maximizing real-time FPS.
+- **Secure Secrets Management:** Use of `.env` files ensures no database credentials or API keys are committed to version control.
+- **Standardized Python Packaging:** Uses `setup.py` and `requirements.txt` to register the local package (`Smart_cooling_edge_AI`), ensuring clean imports and modularity.
+
+---
+
+## Project Structure
+
+```text
 Smart-cooling-edge_AI/
-├── smart_cooling/                 # Core Package
-│   ├── __init__.py
-│   ├── components/
-│   │   ├── __init__.py
-│   │   ├── model_predictor.py     # YOLO ONNX Inference & NMS logic
-│   │   └── hvac_controller.py     # AC regulation matrix logic
-│   ├── dbdata_access/
-│   │   ├── __init__.py
-│   │   └── data_logger.py         # MongoDB Atlas connection & logging
-│   ├── pipeline/
-│   │   ├── __init__.py
-│   │   └── prediction_pipeline.py # Main orchestration loop (5-minute interval)
-│   └── utils/
-│       ├── __init__.py
-│       └── image_utils.py         # CLAHE preprocessing & frame annotations
-│
-├── models/                        # Pre-trained models directory
-│   └── yolo11m.onnx
-│
+├── Smart_cooling_edge_AI/         # Core Application Package
+│   ├── components/                # Inference and Cooling logic
+│   ├── dbdata_access/             # MongoDB Atlas connection & logging
+│   ├── logging/                   # Custom logger configurations
+│   ├── pipeline/                  # Asynchronous Inference Worker & Pipeline
+│   │   ├── inference_thread.py    # Background YOLO daemon thread
+│   │   └── prediction_pipeline.py # Main UI and execution loop
+│   └── utils/                     # CLAHE preprocessing, bounding box drawing, YAML parsers
+├── models/                        # Pretrained models (.onnx)
 ├── notebooks/                     # Jupyter notebooks for experiments
-│   └── experiment.ipynb
-│
-├── app.py                         # Flask Backend & Dashboard Stream
+├── templates/                     # HTML templates for Flask UI (app.py)
+├── Frame_captures/                # Captured frames with detections saved here (for future analysis and model retraining)
+├── logs/                          # System execution logs
+├── resources/                     # Additional project assets (Videos, Images, etc.)
+├── app.py                         # Flask Backend 
 ├── edge_streamer.py               # Edge Node Script (Camera capture & stream)
+├── demo.py                        # Quick standalone demonstration script
+├── template.py                    # Project structure builder script
 ├── setup.py                       # Package installation script
 ├── requirements.txt               # Python dependencies
-├── Dockerfile                     # Container image definition
-└── .env                           # Environment variables (Secrets)
-
+├── params.yaml                    # Global Config parameters (Thresholds, HVAC Rules)
+├── Dockerfile                     # Containerization instructions
+├── .gitignore                     
+└── .env                           # Environment variables 
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## ⚙️ Prerequisites
 
-| Layer | Technology | Role |
-| --- | --- | --- |
-| **Edge Capture** | OpenCV (`cv2`) | Video frame capture and MJPEG streaming |
-| **Inference Engine** | ONNX Runtime (`ort`) + Ultralytics YOLOv11 | Fast object detection and bounding box extraction |
-| **Web Server** | Flask 3.0.2 + Flask-CORS | API routing and live dashboard streaming |
-| **Database** | MongoDB Atlas (`pymongo` + `certifi`) | Cloud telemetry and historical log storage |
-| **Image Processing** | NumPy + OpenCV | CLAHE enhancement, letterbox padding, and normalization |
+Before setting up the project, ensure you have the following installed:
 
----
-
-## ✅ Prerequisites
-
-Before setting up the project, ensure you have:
-
-* **Python** 3.10 or higher installed.
+* **Python 3.10+**
+* **NVIDIA GPU drivers & CUDA toolkit** (Optional but highly recommended for `onnxruntime-gpu`)
 * An active **MongoDB Atlas** cluster connection string.
-* A connected webcam or video source for the edge node.
+* A connected webcam or video source (e.g., IP Camera).
 
 ---
 
-## 📦 Installation
+## Installation & Setup
 
-### Step 1 — Clone and Navigate
-
-Clone your repository and navigate into the project root directory.
-
-### Step 2 — Create and Activate a Virtual Environment
-
+### 1. Clone the Repository
 ```bash
-python -m venv acvenv
-# Windows:
-acvenv\Scripts\activate
-# macOS / Linux:
-source acvenv/bin/activate
-
+git clone https://github.com/your-username/Smart-cooling-edge_AI.git
+cd Smart-cooling-edge_AI
 ```
 
-### Step 3 — Install Dependencies
+### 2. Create Virtual Environment
+```bash
+# Windows
+python -m venv acvenv
+acvenv\Scripts\activate
 
-Install the project in editable mode using `setup.py`:
+# macOS / Linux
+python3 -m venv acvenv
+source acvenv/bin/activate
+```
 
+### 3. Install Dependencies
+Install the core package in editable mode:
 ```bash
 pip install -e .
-
 ```
 
----
-
-## 🔑 Configuration
-
-Create a `.env` file in the root directory with your configuration parameters:
-
+### 4. Configuration
+Create a `.env` file in the root directory and add your MongoDB credentials:
 ```env
-MONGODB_URI="Enter your MongoDB Atlas connection string here"
+MONGODB_URI="mongodb+srv://<user>:<password>@cluster0.mongodb.net/?retryWrites=true&w=majority"
 DB_NAME="Edge_AI_Smart_Cooling"
 COLLECTION_NAME="Edge_AI_Smart_Cooling_Logs"
-
 ```
+> Adjust inference thresholds and HVAC automation rules in `params.yaml`.
 
 ---
 
-## 🚀 Running the Application
+## Running the Application
 
-### 1. Run the Edge Streamer (Edge Node)
-
-On your edge device or simulation environment, start the video stream script:
-
+### Option A: Local / Integrated Testing
+To run the full prediction pipeline locally with OpenCV window display:
 ```bash
-python edge_streamer.py
-
+python -c "from Smart_cooling_edge_AI.pipeline.prediction_pipeline import PredictionPipeline; PredictionPipeline().run_pipeline()"
 ```
 
-### 2. Run the Central Flask Server
-
-Start the backend server to handle inference, HVAC mapping, and database logging:
-
-```bash
-python app.py
-
-```
-
----
-
-## 🔌 API Reference
-
-The Flask server exposes endpoints for managing live video streams and monitoring telemetry records.
-
-* **`GET /video_feed`** — Streams the live processed MJPEG feed with bounding boxes and overlays.
-* **`GET /status`** — Returns the latest HVAC control states and student counts in JSON format.
+### Option B: Distributed Edge Architecture (Production)
+1. **Start the Edge Streamer (on the camera node):**
+   ```bash
+   python edge_streamer.py
+   ```
+2. **Start the Central Server:**
+   ```bash
+   python app.py
+   ```
 
 ---
 
-## 🔧 Troubleshooting
+## Automation Rules (Matrix)
 
-* **ModuleNotFoundError:** Ensure you ran `pip install -e .` so the `smart_cooling` package is properly registered in your environment.
-* **MongoDB Timeout:** Verify your IP address is whitelisted in MongoDB Atlas and that `certifi` is installed.
-* **Camera Not Opening:** Check your device index or replace the video source path in the configuration script.
+The HVAC system adjusts automatically based on the following default occupancy brackets (configurable in `params.yaml`):
+
+| Occupancy Level | Student Count | Active ACs | Mode | Target Temp | Fan Speed | Louver |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Low** | 0 - 20 | 2 | Alternate | 24°C - 25°C | Low | Down |
+| **Medium** | 21 - 60 | 4 | Normal | 22°C - 23°C | Medium | Swing |
+| **High** | 61 - 110 | 4 | Active | 20°C - 21°C | High | Horizontal |
+| **Full** | 111 - 150 | 4 | Turbo | 17°C - 19°C | Max | All Swing |
 
 ---
 
-## 📜 License
+## Troubleshooting
 
-This project is developed for educational and operational research purposes.
+- **Double Inference/Lag:** The system has been upgraded to a threaded architecture. If lag persists, ensure you are utilizing the GPU (`onnxruntime-gpu` is installed) and check CPU/GPU utilization.
+- **MongoDB Timeout:** Verify your IP address is whitelisted in MongoDB Atlas and that `certifi` is installed.
+- **Camera Not Opening:** Check your device index in `params.yaml` (`PIPELINE_CONFIG.video_source`). Change `0` to your specific camera ID or RTSP URL.
+
+---
+
+### Contributing
+
+Contributions, issues, and feature requests are welcome! If you want to help improve or scale this system, check out the key areas for contribution:
+
+- ML Training Pipeline: Build automated data extraction pipelines using MongoDB telemetry logs to prepare custom training datasets.
+
+- Model Retraining & Fine-Tuning: Fine-tune and retrain the default YOLO models using domain-specific classroom capture datasets for higher inference accuracy.
+
+- System Optimization: Optimize multi-threading performance, edge stream latency, and ONNX runtime execution speeds.
+
+#### How to contribute
+
+- Fork the Project
+
+- Create your Feature Branch (git checkout -b feature/ bla.. bla... bla...)
+
+- Commit your Changes (git commit -m 'Add some bla.. bla... bla...')
+
+- Push to the Branch (git push origin feature/ bla.. bla... bla...)
+
+- Open a Pull Request
+
+---
+
+### Author
+
+#### Pasindu Gunathilake
+
+- Education: BSc. Computer Science Undergraduate at the University of Jaffna, Sri Lanka.
+- Email: [pasindugunatilake144@gmail.com](mailto:pasindugunatilake144@gmail.com)
+- Web: [https://pasindugunathilake.github.io/Portfolio-PG](https://pasindugunathilake.github.io/Portfolio-PG)
+- Focus: Full-Stack Development, AI/ML(with Deep Learning) Systems, RAG Systems and Architectures.
+
+---
+
+## License
+
+This project is developed for educational & research purposes. 
