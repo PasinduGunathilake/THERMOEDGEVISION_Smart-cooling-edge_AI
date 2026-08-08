@@ -1,2 +1,1 @@
-backend
-edge_node
+Smart_cooling_edge_AI
