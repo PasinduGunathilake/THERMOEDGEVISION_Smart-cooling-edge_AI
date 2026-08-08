@@ -10,7 +10,6 @@ models/*.onnx
 models/*.pt
 Frame_captures/*
 resources/
-*.egg-info/
 build/
 dist/
 logs/
