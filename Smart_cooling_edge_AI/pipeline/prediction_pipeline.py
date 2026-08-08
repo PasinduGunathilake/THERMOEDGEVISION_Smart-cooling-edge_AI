@@ -1,125 +1,97 @@
 import cv2
-import time
 from pathlib import Path
-from Smart_cooling_edge_AI.components.model_predictor import run_detection
 from Smart_cooling_edge_AI.components.cooling_controller import CoolingController
-from Smart_cooling_edge_AI.utils.image_utils import save_annotated_frame
-from Smart_cooling_edge_AI.dbdata_access.data_logger import db_system_logging
+from Smart_cooling_edge_AI.pipeline.inference_thread import InferenceWorker
+from Smart_cooling_edge_AI.utils.image_utils import draw_boxes
 from Smart_cooling_edge_AI.utils.configurations import read_yaml
 from Smart_cooling_edge_AI.logging.logger import get_logger
-
 
 # Logger initialization
 logger = get_logger("PredictionPipeline")
 
-
-
 class PredictionPipeline:
+
+    """
+    Main pipeline -  orchestrates video capture, display, and AI inferenc.
+
+      - Open the camera / video source.
+      - Push frames to InferenceWorker (background thread - inference_thread.py).
+      - Fetch latest bounding boxes and render them at full camera FPS.
+      - Manage lifecycle (start / stop InferenceWorker cleanly).
+    """
+
     def __init__(self, video_source=None, interval_seconds=None):
         try:
             project_root = Path(__file__).resolve().parent.parent.parent
             config = read_yaml(project_root / "params.yaml")
             logger.info("Configuration parameters loaded successfully in PredictionPipeline.")
-            
-            # Extract configuration parameters safely with fallback defaults to ensure production resilience and prevent KeyError crashes
+
+            # Extract configuration parameters safely with fallback defaults
             pipeline_config = config.get('PIPELINE_CONFIG', {})
-            
-            self.video_source = video_source if video_source is not None else pipeline_config.get('video_source', 0)
+
+            self.video_source     = video_source     if video_source     is not None else pipeline_config.get('video_source', 0)
             self.interval_seconds = interval_seconds if interval_seconds is not None else pipeline_config.get('interval_seconds', 300)
-            self.cooling_controller = CoolingController()
-            
-            logger.info(f"PredictionPipeline initialized with video source: {self.video_source} and interval: {self.interval_seconds}s")
-            
+
+            logger.info(f"PredictionPipeline initialized | source: {self.video_source} | interval: {self.interval_seconds}s")
+
         except Exception as e:
             logger.critical(f"Failed to initialize PredictionPipeline: {str(e)}", exc_info=True)
-            self.video_source = 0
+            self.video_source     = 0
             self.interval_seconds = 5
-            self.cooling_controller = CoolingController()
 
+        # Initialise CoolingController and pass it to the worker
+        self._cooling_controller = CoolingController()
+        self._worker = InferenceWorker(
+            cooling_controller=self._cooling_controller,
+            interval_seconds=self.interval_seconds
+        )
 
 
     def run_pipeline(self):
+        
+        """
+        Main display loop.
+        """
         cap = None
         try:
             logger.info(f"Attempting to open video source: {self.video_source}")
             cap = cv2.VideoCapture(self.video_source)
-            
+
             if not cap.isOpened():
                 logger.critical(f"Error: Could not open video source at {self.video_source}.")
                 return
 
-            logger.info("Starting smart classroom cooling system pipeline. Press 'q' in the video window to exit.")
-            last_checked_time = 0
+            # Start background inference thread , frame flow
+            self._worker.start()
+            logger.info("Smart classroom cooling system pipeline started. Press 'q' to exit.")
 
             while cap.isOpened():
                 ret, frame = cap.read()
                 if not ret:
-                    logger.warning("Video stream ended or failed to grab frame from source.")
+                    logger.warning("Video stream ended or failed to grab frame.")
                     break
-                    
-                current_time = time.time()
-                
-                # Run inference and logging based on interval
-                if current_time - last_checked_time >= self.interval_seconds or last_checked_time == 0:
-                    logger.info("Interval reached. Running AI detection & cooling control adjustment...")
-                    
-                    try:
-                        detected_boxes, person_count = run_detection(frame)
-                        hvac_data = self.cooling_controller.regulate_cooling_system(person_count)
-                        image_path, timestamp_str = save_annotated_frame(frame, detected_boxes, person_count, hvac_data)
-                        db_system_logging(person_count, hvac_data, image_path, timestamp_str)
-                    except Exception as e:
-                        logger.error(f"Error occurred during interval processing block: {str(e)}", exc_info=True)
-                        
-                    last_checked_time = current_time
 
-                # Real-time view updates
+                # Push latest frame to inference worker
+                self._worker.set_frame(frame.copy()) 
+
+                # Fetch latest detection results (uses last known boxes â never blocks)
+                display_boxes, _ = self._worker.get_results()
+
+                # Render bounding boxes on current frame and display
                 try:
-                    display_frame = frame.copy()
-                    detected_boxes, person_count = run_detection(frame)
-                    
-                    for box in detected_boxes:
-                        x1, y1, x2, y2 = map(int, box[:4])
-                        conf = box[4] if len(box) > 4 else 0.0
-                        
-                        cv2.rectangle(display_frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                        
-                        label = f"confidence: {conf:.2f}"
-                        font_scale = 0.6
-                        font_thickness = 2
-                        
-                        (text_width, text_height), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness)
-                        
-                        box_x1 = x1
-                        box_y1 = y1 - text_height - 10
-                        box_x2 = x1 + text_width + 5
-                        box_y2 = y1
-                        
-                        cv2.rectangle(display_frame, (box_x1, box_y1), (box_x2, box_y2), (0, 0, 255), -1)
-                        
-                        cv2.putText(
-                            display_frame, 
-                            label, 
-                            (x1, y1 - 5), 
-                            cv2.FONT_HERSHEY_SIMPLEX, 
-                            font_scale, 
-                            (255, 255, 255), 
-                            font_thickness, 
-                            cv2.LINE_AA
-                        )
-
+                    display_frame = draw_boxes(frame, display_boxes)
                     cv2.imshow("Video Analysis", display_frame)
-
                 except Exception as e:
-                    logger.error(f"Error occurred during real-time frame rendering/display: {str(e)}", exc_info=True)
+                    logger.error(f"Error during frame rendering: {str(e)}", exc_info=True)
 
                 if cv2.waitKey(1) & 0xFF == ord('q'):
-                    logger.info("User requested termination ('q' pressed). Exiting pipeline loop.")
+                    logger.info("User requested termination ('q' pressed).")
                     break
 
         except Exception as e:
-            logger.critical(f"Critical error encountered in pipeline execution: {str(e)}", exc_info=True)
+            logger.critical(f"Critical error in pipeline execution: {str(e)}", exc_info=True)
         finally:
+            self._worker.stop()
             if cap is not None and cap.isOpened():
                 cap.release()
             cv2.destroyAllWindows()
