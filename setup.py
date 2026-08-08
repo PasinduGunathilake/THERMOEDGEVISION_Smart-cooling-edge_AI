@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    name="Smart-cooling-edge_AI",
+    name="Smart_cooling_edge_AI",
     version="0.0.1",
     author="Pasindu Gunathilake",
     author_email="pasindugunathilake144@gmail.com",
