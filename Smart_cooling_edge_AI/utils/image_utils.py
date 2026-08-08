@@ -84,9 +84,51 @@ def preprocess(frame, new_shape=None):
 
 
 
+def draw_boxes(frame, boxes: list):
+    """
+    Draws YOLO bounding boxes and confidence labels onto a frame copy
+    Returns the annotated frame (does not modify the original)
+    """
+    display_frame = frame.copy()
+
+    for box in boxes:
+        x1, y1, x2, y2 = map(int, box[:4])
+        conf = box[4] if len(box) > 4 else 0.0
+
+        # Bounding box
+        cv2.rectangle(display_frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+        # Confidence label
+        label        = f"confidence: {conf:.2f}"
+        font_scale   = 0.6
+        font_thick   = 2
+
+        (text_w, text_h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thick)
+
+        label_bg_x2 = x1 + text_w + 5
+        label_bg_y1 = y1 - text_h - 10
+
+        # Label background rectangle
+        cv2.rectangle(display_frame, (x1, label_bg_y1), (label_bg_x2, y1), (0, 0, 255), -1)
+
+        # Label text
+        cv2.putText(
+            display_frame,
+            label,
+            (x1, y1 - 5),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            font_scale,
+            (255, 255, 255),
+            font_thick,
+            cv2.LINE_AA
+        )
+
+    return display_frame
+
+
 def save_annotated_frame(frame, detected_boxes, person_count, hvac_data):
     """
-    Draws bounding boxes, overlays summary info, and saves the frame locally.
+    Draws bounding boxes, overlays summary info, and saves (future model retraining) the frame locally
     """
 
     try:
@@ -95,38 +137,7 @@ def save_annotated_frame(frame, detected_boxes, person_count, hvac_data):
         capture_dir = project_root / frame_save_dir
         os.makedirs(capture_dir, exist_ok=True)
 
-        frame_copy = frame.copy()
-
-        for box in detected_boxes:
-            x1, y1, x2, y2 = map(int, box[:4])
-
-            conf = box[4] if len(box) > 4 else 0.0
-            
-            cv2.rectangle(frame_copy, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            
-            label = f"confidence: {conf:.2f}"
-            font_scale = 0.6
-            font_thickness = 2
-            
-            (text_width, text_height), baseline = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness)
-            
-            box_x1 = x1
-            box_y1 = y1 - text_height - 10
-            box_x2 = x1 + text_width + 5
-            box_y2 = y1
-            
-            cv2.rectangle(frame_copy, (box_x1, box_y1), (box_x2, box_y2), (0, 0, 255), -1)
-            
-            cv2.putText(
-                frame_copy, 
-                label, 
-                (x1, y1 - 5), 
-                cv2.FONT_HERSHEY_SIMPLEX, 
-                font_scale, 
-                (255, 255, 255), 
-                font_thickness, 
-                cv2.LINE_AA
-            )
+        frame_copy = draw_boxes(frame, detected_boxes)
 
         timestamp_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         file_timestamp_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
