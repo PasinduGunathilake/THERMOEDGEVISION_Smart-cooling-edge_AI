@@ -14,6 +14,7 @@ Smart_cooling_edge_AI/dbdata_access/data_logger.py
 Smart_cooling_edge_AI/logging/__init__.py
 Smart_cooling_edge_AI/logging/logger.py
 Smart_cooling_edge_AI/pipeline/__init__.py
+Smart_cooling_edge_AI/pipeline/inference_thread.py
 Smart_cooling_edge_AI/pipeline/prediction_pipeline.py
 Smart_cooling_edge_AI/utils/__init__.py
 Smart_cooling_edge_AI/utils/configurations.py
