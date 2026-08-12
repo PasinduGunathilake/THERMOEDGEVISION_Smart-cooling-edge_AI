@@ -12,14 +12,16 @@ setup(
         "flask-cors==4.0.0",
         "opencv-python==4.9.0.80",
         "numpy==1.26.4",
-        "onnxruntime==1.20.0",
-        "onnxruntime_gpu==1.23.2",
+        "onnxruntime-gpu>=1.18.0",
         "requests==2.31.0",
         "ipykernel",
         "ultralytics==8.4.115",
         "pymongo==4.17.0",
         "certifi",
-        "python-dotenv"
+        "python-dotenv",
+        "werkzeug",
+        "GPUtil==1.4.0",
+        "psutil"
     ]
 )
 
