@@ -31,17 +31,21 @@ list_of_dirnfiles = [
     
     # Root Level Files
     "models/model.onnx",
-    "notebooks/experiment.ipynb",
+    "notebooks/experiment.ipynb", # For research/ prototyping
     "app.py",                 # Flask Backend & Dashboard Stream
-    "edge_streamer.py",       # Edge Node Script (Camera capture & stream)
-    "templates/index.html",
+    "templates/dashboard.html",    # Main Dashboard & Live Feed
+    "templates/nodes.html",    # Edge Node & Hardware Telemetry
+    "templates/analytics.html", # Control & Occupancy logs Analytics
+    "templates/settings.html", # System & Model Configurations
+    "templates/loading.html", # Loading page
     "params.yaml",            # Configuration (YAML params) management
     "requirements.txt",
     "Dockerfile",
     ".env",
     "setup.py",
     "demo.py"                 # Test Componets working correct or not
-    #"resources",              # Sample images/videos (add manually)
+    #"resources"              # Sample images/videos (add manually)
+    #"static"                # UI resources
 ]
 
 for filepath in list_of_dirnfiles:
