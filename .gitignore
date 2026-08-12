@@ -1,15 +1,24 @@
+# Environment
 acvenv/
-venv/
-env/
-*.env
+.env
+
+# Python Cache & Build
 __pycache__/
 *.pyc
-.vscode/
-.idea/
+*.egg-info/
+
+# Uploads & Captures
+temp_uploads/
+Frame_captures/*
+!Frame_captures/.gitkeep
+
+# Models & Weights
 models/*.onnx
 models/*.pt
-Frame_captures/*
-resources/
-build/
-dist/
+
+# Logs
 logs/
+*.log
+
+# IDE Config
+.vscode/
