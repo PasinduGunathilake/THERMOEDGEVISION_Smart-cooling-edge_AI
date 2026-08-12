@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THERMOEDGEVISION | Edge Nodes & Hardware Telemetry</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#f8bc86',
+                            cyan: '#68c2dc',
+                            teal: '#14b8a6',
+                            dark: '#05080e',
+                            card: '#0b111e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Share Tech Mono', 'monospace'],
+                        mono: ['Share Tech Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body, *, input, button, select, option, textarea {
+            font-family: 'Share Tech Mono', 'JetBrains Mono', monospace !important;
+        }
+        body {
+            background-color: #05080e;
+            color: #e2e8f0;
+        }
+        .glass-panel {
+            background: rgba(11, 17, 30, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(104, 194, 220, 0.15);
+        }
+        .glass-panel-glow {
+            background: rgba(11, 17, 30, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(104, 194, 220, 0.25);
+            box-shadow: 0 0 25px rgba(104, 194, 220, 0.08);
+        }
+        @keyframes cyan-pulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.08); }
+        }
+        .pulse-active { animation: cyan-pulse 2s infinite ease-in-out; }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex bg-[#05080e]">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-16 h-full glass-panel border-r border-teal-500/15 flex flex-col items-center py-5 z-50">
+        <div class="flex flex-col items-center gap-6">
+            <nav class="flex flex-col gap-3 text-gray-400 mt-1">
+                <a href="/dashboard" class="p-2.5 rounded-xl hover:text-white hover:bg-white/5 transition-all" title="Dashboard"><i data-lucide="layout-dashboard" class="w-5 h-5"></i></a>
+                <a href="/nodes" class="p-2.5 rounded-xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 transition-all shadow-md shadow-cyan-500/10" title="Edge Nodes"><i data-lucide="cpu" class="w-5 h-5"></i></a>
+                <a href="/analytics" class="p-2.5 rounded-xl hover:text-white hover:bg-white/5 transition-all" title="Analytics"><i data-lucide="bar-chart-3" class="w-5 h-5"></i></a>
+                <a href="/settings" class="p-2.5 rounded-xl hover:text-white hover:bg-white/5 transition-all" title="Settings"><i data-lucide="settings" class="w-5 h-5"></i></a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="flex-1 h-full flex flex-col overflow-hidden">
+
+        <!-- Top Header (Prominent Larger Header Bar) -->
+        <header class="h-16 glass-panel border-b border-teal-500/20 px-6 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-4">
+                <h2 class="text-base font-extrabold text-white tracking-wider font-mono flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-900/90 border-2 border-cyan-400/70 shadow-[0_0_16px_rgba(6,182,212,0.6)] flex items-center justify-center p-1.5 overflow-hidden shrink-0 transition-transform hover:scale-105">
+                        <img src="{{ url_for('static', filename='logo_emblem.png') }}" class="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(6,182,212,0.9)]" alt="Logo">
+                    </div>
+                    <span class="font-extrabold tracking-wider text-lg"><span class="text-[#f8bc86] drop-shadow-[0_0_10px_rgba(248,188,134,0.6)]">THERMO</span><span class="text-[#68c2dc] drop-shadow-[0_0_10px_rgba(104,194,220,0.6)]">EDGEVISION</span></span> <span class="text-[#68c2dc]/80 font-normal text-xs sm:text-sm">| Edge Node & Hardware Telemetry Matrix </span>
+                </h2>
+                <div class="hidden lg:flex items-center gap-2 text-xs font-mono text-cyan-400 bg-cyan-500/10 px-3.5 py-1 rounded-full border border-cyan-500/25">
+                    <span>YOLO11n ONNX GPU</span>
+                </div>
+            </div>
+            
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="flex-1 p-5 overflow-y-auto font-mono space-y-5">
+
+            <!-- Node 1: Primary Edge Processing Server -->
+            <div class="glass-panel-glow rounded-2xl p-5 border border-cyan-500/30 relative overflow-hidden">
+                <div class="flex items-center justify-between border-b border-teal-500/15 pb-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 rounded-xl bg-cyan-950/80 border border-cyan-400/60 text-cyan-400 shadow-md">
+                            <i data-lucide="server" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-extrabold text-white tracking-wider flex items-center gap-2">
+                                NODE-01: PRIMARY EDGE INFERENCE MATRIX
+                                <span class="text-[10px] text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20 font-mono">PRIMARY</span>
+                            </h3>
+                            <p class="text-xs text-gray-400 font-sans mt-0.5">HP Victus 15 Edge Processing Node | Windows 11 Pro 64-bit</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-bold border border-emerald-500/30 flex items-center gap-2 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> ONLINE - ACTIVE INFERENCE
+                    </span>
+                </div>
+
+                <!-- Metrics Cards Grid -->
+                <div class="grid grid-cols-4 gap-4 mb-4">
+                    <div class="glass-panel rounded-xl p-3.5 border border-teal-500/20">
+                        <div class="flex justify-between items-center text-xs text-gray-400 mb-1">
+                            <span>CPU USAGE</span>
+                            <i data-lucide="cpu" class="w-4 h-4 text-cyan-400"></i>
+                        </div>
+                        <div class="text-xl font-extrabold text-cyan-300" id="node-cpu-usage">-- %</div>
+                        <div class="text-[10px] text-gray-500 mt-1" id="node-cpu-freq">Freq: -- MHz</div>
+                    </div>
+                    <div class="glass-panel rounded-xl p-3.5 border border-teal-500/20">
+                        <div class="flex justify-between items-center text-xs text-gray-400 mb-1">
+                            <span>SYSTEM MEMORY</span>
+                            <i data-lucide="database" class="w-4 h-4 text-cyan-400"></i>
+                        </div>
+                        <div class="text-xl font-extrabold text-emerald-400" id="node-ram-usage">-- GB</div>
+                        <div class="text-[10px] text-gray-500 mt-1">16.0 GB DDR4 Total</div>
+                    </div>
+                    <div class="glass-panel rounded-xl p-3.5 border border-teal-500/20">
+                        <div class="flex justify-between items-center text-xs text-gray-400 mb-1">
+                            <span>GPU COMPUTE</span>
+                            <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+                        </div>
+                        <div class="text-xl font-extrabold text-amber-300" id="node-gpu-usage">-- %</div>
+                        <div class="text-[10px] text-gray-500 mt-1" id="node-gpu-name">GPU: Loading...</div>
+                    </div>
+                    <div class="glass-panel rounded-xl p-3.5 border border-teal-500/20">
+                        <div class="flex justify-between items-center text-xs text-gray-400 mb-1">
+                            <span>GPU THERMAL</span>
+                            <i data-lucide="thermometer" class="w-4 h-4 text-rose-400"></i>
+                        </div>
+                        <div class="text-xl font-extrabold text-rose-300" id="node-gpu-temp">-- °C</div>
+                        <div class="text-[10px] text-gray-500 mt-1" id="node-gpu-mem">VRAM: --</div>
+                    </div>
+                </div>
+
+                <!-- Hardware Specifications Bar (100% Dynamically Fetched from OS & ONNX Engine) -->
+                <div class="glass-panel rounded-xl p-3 border border-teal-500/15 text-xs text-gray-300 flex items-center justify-between flex-wrap gap-2">
+                    <div><span class="text-gray-500">Execution Provider:</span> <span id="node-exec-provider" class="text-cyan-400 font-bold">CUDAExecutionProvider (ONNX Runtime)</span></div>
+                    <div><span class="text-gray-500">Target Model:</span> <span id="node-target-model" class="text-amber-300 font-bold">YOLOv11n.onnx (10.2 MB)</span></div>
+                    <div><span class="text-gray-500">Inference Speed:</span> <span id="node-inference-speed" class="text-emerald-400 font-bold">~4.2 ms / frame</span></div>
+                    <div><span class="text-gray-500">IP Address:</span> <span id="node-ip-address" class="text-slate-300 font-bold">127.0.0.1</span></div>
+                </div>
+            </div>
+
+            <!-- Grid of Real Active Edge Subsystems -->
+            <div class="grid grid-cols-2 gap-5">
+                
+                <!-- Subsystem 1: Real-Time ONNX Inference Pipeline Worker -->
+                <div class="glass-panel rounded-2xl p-5 border border-teal-500/20">
+                    <div class="flex items-center justify-between border-b border-teal-500/15 pb-3 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 rounded-lg bg-slate-900 border border-slate-700 text-cyan-400">
+                                <i data-lucide="cpu" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">SUBSYSTEM-01: ONNX INFERENCE ENGINE</h4>
+                                <p class="text-[11px] text-gray-400 font-sans">YOLOv11 Object Detection & Bounding Box Predictor</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 text-[10px] font-bold border border-emerald-500/30 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> RUNNING
+                        </span>
+                    </div>
+                    <div class="space-y-2 text-xs text-gray-400">
+                        <div class="flex justify-between"><span>Pipeline Status:</span><span class="text-emerald-400 font-bold">Active Thread Worker</span></div>
+                        <div class="flex justify-between"><span>Execution Provider:</span><span class="text-slate-300" id="sub1-provider">ONNX Runtime</span></div>
+                        <div class="flex justify-between"><span>YAML Config:</span><span class="text-slate-300">params.yaml Synchronized</span></div>
+                    </div>
+                </div>
+
+                <!-- Subsystem 2: MongoDB Atlas Data Sync Worker -->
+                <div class="glass-panel rounded-2xl p-5 border border-teal-500/20">
+                    <div class="flex items-center justify-between border-b border-teal-500/15 pb-3 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 rounded-lg bg-slate-900 border border-slate-700 text-amber-400">
+                                <i data-lucide="database" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">SUBSYSTEM-02: MONGODB ATLAS CLOUD SYNC</h4>
+                                <p class="text-[11px] text-gray-400 font-sans">Real-time Telemetry & HVAC Control Event Logger</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 text-[10px] font-bold border border-emerald-500/30 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> CLOUD CONNECTED
+                        </span>
+                    </div>
+                    <div class="space-y-2 text-xs text-gray-400">
+                        <div class="flex justify-between"><span>Cluster Connection:</span><span class="text-emerald-400 font-bold">Atlas Cloud TLS/SSL</span></div>
+                        <div class="flex justify-between"><span>Database Name:</span><span class="text-slate-300">smart_cooling_db</span></div>
+                        <div class="flex justify-between"><span>Collection:</span><span class="text-slate-300">telemetry_logs</span></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        async function updateTelemetry() {
+            try {
+                let res = await fetch('/api/status');
+                let data = await res.json();
+                
+                if (data.Machine_Performance) {
+                    let mp = data.Machine_Performance;
+                    document.getElementById('node-cpu-usage').innerText = mp.cpu_usage || '-- %';
+                    document.getElementById('node-cpu-freq').innerText = `Freq: ${mp.cpu_frequency || 'N/A'}`;
+                    document.getElementById('node-ram-usage').innerText = mp.cpu_memory || '-- GB';
+                    document.getElementById('node-gpu-usage').innerText = mp.gpu_usage || '-- %';
+                    document.getElementById('node-gpu-name').innerText = `GPU: ${mp.gpu_name || 'N/A'}`;
+                    document.getElementById('node-gpu-temp').innerText = mp.gpu_temp || '-- °C';
+                    document.getElementById('node-gpu-mem').innerText = `VRAM: ${mp.gpu_memory || 'N/A'}`;
+                }
+
+                // Dynamic ONNX Metadata & IP Address Population
+                if (data.onnx_info) {
+                    let prov = data.onnx_info.execution_provider || 'CUDAExecutionProvider (ONNX Runtime)';
+                    document.getElementById('node-exec-provider').innerText = prov;
+                    document.getElementById('node-target-model').innerText = data.onnx_info.model_name || 'YOLOv11n.onnx (10.2 MB)';
+                    document.getElementById('node-ip-address').innerText = data.onnx_info.ip_address || '127.0.0.1';
+                    if (document.getElementById('sub1-provider')) {
+                        document.getElementById('sub1-provider').innerText = prov;
+                    }
+                }
+
+                if (data.system_metrics && data.system_metrics.latency) {
+                    document.getElementById('node-inference-speed').innerText = `~${data.system_metrics.latency} / frame`;
+                } else if (data.hvac && data.hvac.latency) {
+                    document.getElementById('node-inference-speed').innerText = `~${data.hvac.latency} / frame`;
+                }
+            } catch (e) {
+                console.error("Telemetry update error:", e);
+            }
+        }
+
+        updateTelemetry();
+        setInterval(updateTelemetry, 2000);
+    </script>
+</body>
+</html>

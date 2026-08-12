@@ -28,9 +28,13 @@ def get_logger(name: str):
     log_filename = f"log_{timestamp_str}.log"
     
     full_log_path = log_dir / log_filename
+    main_log_path = log_dir / "system_execution.log"
     
     file_handler = logging.FileHandler(full_log_path, encoding="utf-8")
     file_handler.setLevel(logging.INFO)
+
+    main_file_handler = logging.FileHandler(main_log_path, encoding="utf-8")
+    main_file_handler.setLevel(logging.INFO)
     
     # Formatter
     formatter = logging.Formatter(
@@ -40,8 +44,10 @@ def get_logger(name: str):
     
     console_handler.setFormatter(formatter)
     file_handler.setFormatter(formatter)
+    main_file_handler.setFormatter(formatter)
     
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
+    logger.addHandler(main_file_handler)
     
     return logger

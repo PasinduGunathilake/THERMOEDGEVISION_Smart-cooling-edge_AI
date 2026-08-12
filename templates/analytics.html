@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Cooling Edge AI - Real-time Analytics & DB Logs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body, *, input, button, select, option, textarea { font-family: 'Share Tech Mono', 'JetBrains Mono', monospace !important; }
+        body { background-color: #070a10; color: #f3f4f6; }
+        .font-mono { font-family: 'Share Tech Mono', 'JetBrains Mono', monospace !important; }
+        .glass-panel { background: rgba(11, 18, 27, 0.90); backdrop-filter: blur(16px); border: 1px solid rgba(20, 184, 166, 0.2); }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-16 h-full glass-panel border-r border-teal-500/10 flex flex-col items-center py-5 z-50">
+        <div class="flex flex-col items-center gap-6">
+            <nav class="flex flex-col gap-3 text-gray-400 mt-1">
+                <a href="/dashboard" class="p-2.5 rounded-xl hover:text-white hover:bg-white/5 transition-all" title="Dashboard"><i data-lucide="layout-dashboard" class="w-5 h-5"></i></a>
+                <a href="/nodes" class="p-2.5 rounded-xl hover:text-white hover:bg-white/5 transition-all" title="Edge Nodes"><i data-lucide="cpu" class="w-5 h-5"></i></a>
+                <a href="/analytics" class="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 transition-all" title="Analytics"><i data-lucide="bar-chart-3" class="w-5 h-5"></i></a>
+                <a href="/settings" class="p-2.5 rounded-xl hover:text-white hover:bg-white/5 transition-all" title="Settings"><i data-lucide="settings" class="w-5 h-5"></i></a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="flex-1 h-full flex flex-col overflow-hidden">
+        <!-- Top Header (Prominent Larger Header Bar) -->
+        <header class="h-16 glass-panel border-b border-teal-500/20 px-6 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-4">
+                <h2 class="text-base font-extrabold text-white tracking-wider font-mono flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-900/90 border-2 border-cyan-400/70 shadow-[0_0_16px_rgba(6,182,212,0.6)] flex items-center justify-center p-1.5 overflow-hidden shrink-0 transition-transform hover:scale-105">
+                        <img src="{{ url_for('static', filename='logo_emblem.png') }}" class="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(6,182,212,0.9)]" alt="Logo">
+                    </div>
+                    <span class="font-extrabold tracking-wider text-lg"><span class="text-[#f8bc86] drop-shadow-[0_0_10px_rgba(248,188,134,0.6)]">THERMO</span><span class="text-[#68c2dc] drop-shadow-[0_0_10px_rgba(104,194,220,0.6)]">EDGEVISION</span></span> <span class="text-[#68c2dc]/80 font-normal text-xs sm:text-sm">| Real-Time Analytics & MongoDB Captures </span>
+                </h2>
+                <div class="hidden lg:flex items-center gap-2 text-xs font-mono text-cyan-400 bg-cyan-500/10 px-3.5 py-1 rounded-full border border-cyan-500/25">
+                    <span>YOLO11n ONNX GPU</span>
+                </div>
+            </div>
+            
+        </header>
+
+        <main class="flex-1 p-4 grid grid-cols-12 gap-4 overflow-y-auto font-mono">
+            
+            <!-- Left Col: Real MongoDB Frame Capture Logs (Col 6) -->
+            <div class="col-span-6 glass-panel rounded-2xl p-4 border border-teal-500/20 flex flex-col h-72 overflow-hidden">
+                <div class="flex items-center justify-between pb-2 mb-3 border-b border-teal-500/10 shrink-0">
+                    <span class="text-xs font-bold text-cyan-400">MONGODB FRAME CAPTURE HISTORY</span>
+                    <i data-lucide="database" class="w-4 h-4 text-cyan-400"></i>
+                </div>
+                <div class="flex-1 overflow-y-auto flex flex-col gap-2.5 pr-1">
+                    <div id="capture-logs-container" class="flex flex-col gap-2.5">
+                        <div class="p-3 rounded-xl bg-white/5 border border-teal-500/10 text-xs text-gray-400 text-center">
+                            Loading real database records...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Col: System & DB Audit Logs (Col 6) -->
+            <div class="col-span-6 glass-panel rounded-2xl p-4 border border-teal-500/20 flex flex-col h-72 overflow-hidden">
+                <div class="flex items-center justify-between pb-2 mb-3 border-b border-teal-500/10 shrink-0">
+                    <span class="text-xs font-bold text-amber-400">DATABASE AUDIT TRAIL & EVENTS</span>
+                    <i data-lucide="shield-check" class="w-4 h-4 text-amber-400"></i>
+                </div>
+                <div class="flex-1 overflow-y-auto flex flex-col gap-2 pr-1 text-xs">
+                    <div id="db-logs-container" class="flex flex-col gap-2">
+                        <div class="p-2.5 rounded-xl bg-darkBg/80 border border-teal-500/10 text-xs text-gray-400 text-center">
+                            Fetching audit logs...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Full-Width: Futuristic Live Terminal System Log Console (Col 12) -->
+            <div class="col-span-12 glass-panel rounded-2xl border border-cyan-500/30 flex flex-col h-80 overflow-hidden shadow-2xl shadow-cyan-950/40">
+                <!-- Terminal Header Bar -->
+                <div class="px-4 py-2.5 bg-[#090d16] border-b border-cyan-500/20 flex items-center justify-between shrink-0">
+                    <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-1.5 mr-2">
+                            <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+                        </div>
+                        <i data-lucide="terminal" class="w-4 h-4 text-cyan-400"></i>
+                        <span class="text-xs font-mono font-bold text-cyan-300 tracking-wider">SYSTEM EXECUTION LOGS</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center gap-1.5 text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                            LIVE LOGS
+                        </span>
+                        <button onclick="clearTerminal()" class="text-[10px] text-gray-400 hover:text-white px-2 py-0.5 rounded bg-white/5 border border-white/10 hover:bg-white/10 transition-all">Clear</button>
+                    </div>
+                </div>
+
+                <!-- Terminal Window Body -->
+                <div id="terminal-body" class="flex-1 p-3.5 bg-[#040711] overflow-y-auto font-mono text-xs leading-relaxed flex flex-col gap-1 select-text">
+                    <div class="text-gray-500 italic text-[11px]">Connecting to Edge AI System Execution Stream...</div>
+                </div>
+
+                <!-- Terminal Footer Status Bar -->
+                <div class="px-4 py-1.5 bg-[#070b14] border-t border-cyan-500/15 flex items-center justify-between text-[11px] font-mono text-gray-400 shrink-0">
+                    <div class="flex items-center gap-2">
+                        <span class="text-cyan-400 font-bold">edge-ai-node-01:~$</span>
+                        <span class="text-gray-300">systemctl status smart-cooling-edge.service --follow</span>
+                        <span class="w-2 h-4 bg-cyan-400 inline-block animate-pulse"></span>
+                    </div>
+                    <span class="text-[10px] text-cyan-400/80 font-bold" id="terminal-line-count">0 Lines Loaded</span>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function formatLogLine(line) {
+            let coloredLine = line;
+            if (line.includes('INFO')) {
+                coloredLine = line.replace('INFO', '<span class="text-emerald-400 font-bold">INFO</span>');
+            } else if (line.includes('WARNING') || line.includes('WARN')) {
+                coloredLine = line.replace('WARNING', '<span class="text-amber-400 font-bold">WARN</span>');
+            } else if (line.includes('ERROR') || line.includes('CRITICAL')) {
+                coloredLine = line.replace('ERROR', '<span class="text-rose-400 font-bold">ERR!</span>');
+            } else if (line.includes('SUCCESS')) {
+                coloredLine = line.replace('SUCCESS', '<span class="text-cyan-400 font-bold">OK</span>');
+            }
+
+            coloredLine = coloredLine.replace(/^(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})/, '<span class="text-cyan-300/70 font-bold">$1</span>');
+            return `<div class="font-mono text-[11px] tracking-tight hover:bg-cyan-500/5 px-1 py-0.5 rounded transition-colors text-gray-300">${coloredLine}</div>`;
+        }
+
+        async function fetchSystemLogs() {
+            try {
+                let res = await fetch('/api/system_logs');
+                let data = await res.json();
+                if (data.logs && Array.isArray(data.logs)) {
+                    let termBody = document.getElementById('terminal-body');
+                    termBody.innerHTML = data.logs.map(line => formatLogLine(line)).join('');
+                    document.getElementById('terminal-line-count').innerText = `${data.logs.length} Lines Streamed`;
+                    termBody.scrollTop = termBody.scrollHeight;
+                }
+            } catch (err) {
+                console.error("Failed to fetch system execution logs:", err);
+            }
+        }
+
+        function clearTerminal() {
+            document.getElementById('terminal-body').innerHTML = '<div class="text-gray-500 italic text-[11px]">Terminal logs cleared. Waiting for next stream cycle...</div>';
+        }
+
+        async function fetchRealAnalytics() {
+            try {
+                let res = await fetch('/api/analytics_logs');
+                let data = await res.json();
+                
+                // Populate Capture Logs from MongoDB Atlas
+                if (data.capture_logs && data.capture_logs.length > 0) {
+                    let capContainer = document.getElementById('capture-logs-container');
+                    capContainer.innerHTML = data.capture_logs.map(log => `
+                        <div class="p-3.5 rounded-xl bg-[#090d16]/90 border border-teal-500/20 hover:border-cyan-400/50 transition-all flex flex-col gap-2 shadow-md hover:shadow-cyan-500/10">
+                            <div class="flex justify-between items-center text-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 font-mono text-[10px] font-bold">#${log.short_id}</span>
+                                    <span class="text-white font-bold text-xs">${log.time}</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded ${log.ac_count > 0 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-700/50 text-slate-400 border border-slate-600/30'} text-[10px] font-bold">
+                                    ${log.ac_count} ACs ACTIVE (${log.ac_mode})
+                                </span>
+                            </div>
+                            <div class="grid grid-cols-4 gap-2 bg-darkBg/60 p-2 rounded-lg text-[10px] font-mono border border-teal-500/10 text-gray-300">
+                                <div><span class="text-gray-500 block text-[9px]">STUDENTS</span><span class="text-cyan-300 font-bold">${log.persons}</span></div>
+                                <div><span class="text-gray-500 block text-[9px]">OCCUPANCY</span><span class="text-amber-300 font-bold">${log.occupancy}</span></div>
+                                <div><span class="text-gray-500 block text-[9px]">TARGET TEMP</span><span class="text-purple-300 font-bold">${log.temp_range}</span></div>
+                                <div><span class="text-gray-500 block text-[9px]">FAN / LOUVER</span><span class="text-gray-200 font-bold">${log.fan_speed} / ${log.louver}</span></div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('capture-logs-container').innerHTML = `
+                        <div class="p-4 rounded-xl bg-white/5 border border-teal-500/10 text-xs text-amber-400 text-center font-mono">
+                            No active records in MongoDB collection or connection in standby.
+                        </div>`;
+                }
+
+                // Populate DB Audit Logs
+                if (data.db_logs && data.db_logs.length > 0) {
+                    let dbContainer = document.getElementById('db-logs-container');
+                    dbContainer.innerHTML = data.db_logs.map(db => `
+                        <div class="p-3 rounded-xl bg-[#090d16]/90 border border-teal-500/15 flex items-center justify-between gap-3 text-xs hover:border-amber-500/40 transition-all">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                </div>
+                                <div>
+                                    <div class="text-gray-200 font-bold text-[11px]">${db.message}</div>
+                                    <div class="text-[9px] font-mono text-gray-500">${db.timestamp} | Document ID: #${db.doc_id}</div>
+                                </div>
+                            </div>
+                            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono text-[9px] font-bold shrink-0">${db.action}</span>
+                        </div>
+                    `).join('');
+                    lucide.createIcons();
+                }
+            } catch (err) {
+                console.error("Failed to fetch real database analytics:", err);
+            }
+        }
+
+        // Poll every 3 seconds for real-time DB & System Terminal logs
+        setInterval(fetchRealAnalytics, 4000);
+        setInterval(fetchSystemLogs, 3000);
+        fetchRealAnalytics();
+        fetchSystemLogs();
+    </script>
+</body>
+</html>

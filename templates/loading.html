@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THERMOEDGEVISION AI - System Initialization</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body, *, input, button, select, option, textarea { font-family: 'Share Tech Mono', 'JetBrains Mono', monospace !important; }
+        body { background-color: #040710; color: #f3f4f6; }
+        .font-mono { font-family: 'Share Tech Mono', 'JetBrains Mono', monospace !important; }
+
+        @keyframes airflow-float {
+            0% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.35; }
+            50% { transform: translateY(-30px) translateX(40px) scale(1.1); opacity: 0.65; }
+            100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.35; }
+        }
+        @keyframes laser-scan {
+            0% { top: -20%; }
+            100% { top: 120%; }
+        }
+        .airflow-wave-1 { animation: airflow-float 12s ease-in-out infinite; }
+        .airflow-wave-2 { animation: airflow-float 16s ease-in-out infinite reverse; }
+        .animate-laser-scan { animation: laser-scan 9s linear infinite; }
+        .cv-reticle { transition: transform 0.8s cubic-bezier(0.34, 1.4, 0.64, 1); }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col items-center justify-center bg-[#040710] font-mono relative p-6">
+
+    <!-- Ultimate Fusion: Computer Vision + Neural AI/ML Mesh + Dense Airflow Streamlines Background -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <!-- Glowing Ambient Thermal & Cyan Gradient Orbs -->
+        <div class="absolute -top-40 -left-40 w-[600px] h-[600px] bg-cyan-500/20 rounded-full blur-[150px] airflow-wave-1"></div>
+        <div class="absolute -bottom-40 -right-40 w-[650px] h-[650px] bg-[#f8bc86]/15 rounded-full blur-[170px] airflow-wave-2"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-teal-500/12 rounded-full blur-[200px]"></div>
+
+        <!-- Computer Vision Laser Scanning Sweep Beam -->
+        <div class="absolute inset-x-0 h-48 bg-gradient-to-b from-transparent via-cyan-400/15 to-transparent animate-laser-scan opacity-70"></div>
+
+        <!-- High-Tech SVG: CV Target Brackets, AI Neural Mesh, Dense Airflow Streams -->
+        <svg class="absolute inset-0 w-full h-full opacity-70" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="flow-cyan-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#f8bc86" stop-opacity="0.8"/>
+                    <stop offset="45%" stop-color="#68c2dc" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#10b981" stop-opacity="0.6"/>
+                </linearGradient>
+                <linearGradient id="flow-aero" x1="100%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.75"/>
+                    <stop offset="50%" stop-color="#2dd4bf" stop-opacity="0.85"/>
+                    <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.5"/>
+                </linearGradient>
+                <pattern id="cv-neural-grid" width="56" height="56" patternUnits="userSpaceOnUse">
+                    <path d="M 56 0 L 0 0 0 56" fill="none" stroke="rgba(104,194,220,0.12)" stroke-width="1.2"/>
+                    <circle cx="28" cy="28" r="1.5" fill="rgba(248,188,134,0.25)"/>
+                </pattern>
+            </defs>
+
+            <!-- Cybernetic Neural Grid -->
+            <rect width="100%" height="100%" fill="url(#cv-neural-grid)" />
+
+            <!-- DENSE DYNAMIC AIRFLOW WAVES (8 Streamlines) -->
+            <path d="M -200 150 Q 400 -50 1100 250 T 2400 150" fill="none" stroke="url(#flow-cyan-gold)" stroke-width="3" class="airflow-wave-1"/>
+            <path d="M -200 300 Q 600 500 1300 200 T 2400 400" fill="none" stroke="url(#flow-aero)" stroke-width="2.5" class="airflow-wave-2"/>
+            <path d="M -200 450 Q 300 150 1400 650 T 2400 300" fill="none" stroke="rgba(104,194,220,0.4)" stroke-width="1.8" stroke-dasharray="12 8" class="airflow-wave-1"/>
+            <path d="M -200 600 Q 700 800 1500 450 T 2400 700" fill="none" stroke="url(#flow-cyan-gold)" stroke-width="2.2" class="airflow-wave-2"/>
+            <path d="M -200 750 Q 450 350 1600 800 T 2400 450" fill="none" stroke="rgba(248,188,134,0.35)" stroke-width="1.5" stroke-dasharray="8 6" class="airflow-wave-1"/>
+            <path d="M -200 900 Q 800 600 1700 950 T 2400 800" fill="none" stroke="url(#flow-aero)" stroke-width="2" class="airflow-wave-2"/>
+
+            <!-- DYNAMIC JUMPING COMPUTER VISION TARGET RETICLES -->
+            <g id="cv-reticle-1" transform="translate(140, 100)" class="cv-reticle">
+                <path d="M 0 20 L 0 0 L 20 0 M 60 0 L 80 0 L 80 20 M 80 60 L 80 80 L 60 80 M 20 80 L 0 80 L 0 60" fill="none" stroke="#68c2dc" stroke-width="2"/>
+                <text id="cv-text-1" x="5" y="-8" fill="#68c2dc" font-size="11" font-weight="bold">CV: PERSON 0.98 [X:140 Y:100]</text>
+            </g>
+            <g id="cv-reticle-2" transform="translate(1250, 160)" class="cv-reticle">
+                <path d="M 0 20 L 0 0 L 20 0 M 60 0 L 80 0 L 80 20 M 80 60 L 80 80 L 60 80 M 20 80 L 0 80 L 0 60" fill="none" stroke="#f8bc86" stroke-width="2"/>
+                <text id="cv-text-2" x="5" y="-8" fill="#f8bc86" font-size="11" font-weight="bold">AI: ZONE 1 OCCUPIED [X:1250 Y:160]</text>
+            </g>
+            <g id="cv-reticle-3" transform="translate(220, 680)" class="cv-reticle">
+                <path d="M 0 20 L 0 0 L 20 0 M 60 0 L 80 0 L 80 20 M 80 60 L 80 80 L 60 80 M 20 80 L 0 80 L 0 60" fill="none" stroke="#10b981" stroke-width="2"/>
+                <text id="cv-text-3" x="5" y="-8" fill="#10b981" font-size="11" font-weight="bold">HVAC: AC-1 COOLING 24.5°C</text>
+            </g>
+            <g id="cv-reticle-4" transform="translate(1320, 640)" class="cv-reticle">
+                <path d="M 0 20 L 0 0 L 20 0 M 60 0 L 80 0 L 80 20 M 80 60 L 80 80 L 60 80 M 20 80 L 0 80 L 0 60" fill="none" stroke="#38bdf8" stroke-width="2"/>
+                <text id="cv-text-4" x="5" y="-8" fill="#38bdf8" font-size="11" font-weight="bold">YOLO11n 4.2ms GPU ONNX</text>
+            </g>
+
+            <!-- NEURAL NETWORK SYNAPSE CONNECTIONS -->
+            <g opacity="0.7">
+                <line x1="220" y1="180" x2="480" y2="340" stroke="rgba(104,194,220,0.4)" stroke-width="1.5" stroke-dasharray="4 4"/>
+                <line x1="480" y1="340" x2="750" y2="190" stroke="rgba(248,188,134,0.4)" stroke-width="1.5"/>
+                <line x1="750" y1="190" x2="1150" y2="320" stroke="rgba(104,194,220,0.4)" stroke-width="1.5"/>
+                <line x1="1150" y1="320" x2="1380" y2="160" stroke="rgba(16,185,129,0.4)" stroke-width="1.5"/>
+
+                <circle cx="220" cy="180" r="4.5" fill="#68c2dc" class="animate-ping opacity-75"/>
+                <circle cx="480" cy="340" r="5.5" fill="#f8bc86"/>
+                <circle cx="750" cy="190" r="4.5" fill="#68c2dc"/>
+                <circle cx="1150" cy="320" r="5.5" fill="#10b981"/>
+                <circle cx="1380" cy="160" r="4.5" fill="#68c2dc" class="animate-ping opacity-75"/>
+            </g>
+        </svg>
+    </div>
+
+    <!-- Central High-Tech System Loading Container (Borderless, Floating Directly on Background Grid) -->
+    <div class="relative z-10 max-w-2xl w-full flex flex-col items-center text-center">
+        
+        <!-- Large Animated Hexagon Radar / AI Core Spinner -->
+        <div class="relative w-44 h-44 mb-10 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full border-2 border-cyan-500/30 animate-ping"></div>
+            <div class="absolute inset-0 rounded-full border-2 border-dashed border-cyan-400/80 animate-[spin_6s_linear_infinite]"></div>
+            <div class="absolute inset-3 rounded-full border-2 border-teal-400 border-t-transparent animate-[spin_3s_linear_infinite_reverse]"></div>
+            <div class="w-24 h-24 rounded-3xl bg-slate-900/95 border-2 border-cyan-400 flex items-center justify-center shadow-[0_0_50px_rgba(6,182,212,0.8)] overflow-hidden p-3 transition-transform hover:scale-105">
+                <img src="{{ url_for('static', filename='logo_emblem.png') }}" class="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(6,182,212,1)] animate-pulse" alt="ThermoEdgeVision AI Logo">
+            </div>
+        </div>
+
+        <!-- Prominent Large Hero System Title & Version -->
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-widest mb-3 flex items-center justify-center gap-4 flex-wrap">
+            <span class="font-extrabold tracking-widest"><span class="text-[#f8bc86] drop-shadow-[0_0_18px_rgba(248,188,134,0.7)]">THERMO</span><span class="text-[#68c2dc] drop-shadow-[0_0_18px_rgba(104,194,220,0.7)]">EDGEVISION</span></span>
+        </h1>
+        <p class="text-sm sm:text-base text-cyan-400/80 mb-12 tracking-widest uppercase font-bold">EDGE INTELLIGENCE FOR SMARTER COOLING</p>
+
+        <!-- Prominent Large Dynamic Progress Bar -->
+        <div class="w-full bg-slate-950/90 rounded-full h-3.5 overflow-hidden border border-cyan-500/40 mb-4 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
+            <div id="loading-progress-bar" class="bg-gradient-to-r from-[#f8bc86] via-[#68c2dc] to-emerald-400 h-full rounded-full transition-all duration-300 ease-out shadow-[0_0_25px_rgba(6,182,212,0.9)]" style="width: 0%;"></div>
+        </div>
+
+        <!-- Large Percentage Ticker & Step Status Display -->
+        <div class="w-full flex justify-between items-center text-sm font-bold tracking-wider">
+            <span id="loading-status-text" class="text-cyan-300 truncate pr-4 text-xs sm:text-sm">Reading System Configurations...</span>
+            <span id="loading-percentage-text" class="text-emerald-400 font-mono text-lg font-extrabold">0%</span>
+        </div>
+
+        <!-- Futuristic Boot Metrics Badges Bar at Bottom -->
+        <div class="mt-12 flex items-center justify-center gap-4 flex-wrap text-[11px] text-gray-400">
+            <span class="px-3 py-1 rounded-full bg-slate-900/80 border border-teal-500/20 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span> YOLO11n ONNX CORE
+            </span>
+            <span class="px-3 py-1 rounded-full bg-slate-900/80 border border-teal-500/20 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> MONGODB ATLAS READY
+            </span>
+            <span class="px-3 py-1 rounded-full bg-slate-900/80 border border-teal-500/20 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> GPU ACCELERATED
+            </span>
+        </div>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // 1. Independent Random CV Target Reticle Motion
+        (function startIndependentReticleJumper() {
+            const reticleData = [
+                {
+                    id: 'cv-reticle-1', textId: 'cv-text-1',
+                    labels: ['CV: PERSON 0.98', 'CV: STUDENT DETECTED', 'CV: OCCUPANT #1', 'CV: HEAD POSE MATCH'],
+                    minX: 100, maxX: 550, minY: 90, maxY: 460, baseSpeed: 1400
+                },
+                {
+                    id: 'cv-reticle-2', textId: 'cv-text-2',
+                    labels: ['AI: ZONE 1 OCCUPIED', 'AI: THERMAL HEAT LOAD', 'AI: FAN SPEED 80%', 'AI: OPTIMAL FLOW'],
+                    minX: 950, maxX: 1420, minY: 110, maxY: 480, baseSpeed: 1900
+                },
+                {
+                    id: 'cv-reticle-3', textId: 'cv-text-3',
+                    labels: ['HVAC: AC-1 COOLING 24.5°C', 'HVAC: AC-2 STANDBY', 'HVAC: DUAL AC MATRIX', 'HVAC: FLOW OPTIMIZED'],
+                    minX: 140, maxX: 620, minY: 520, maxY: 760, baseSpeed: 1650
+                },
+                {
+                    id: 'cv-reticle-4', textId: 'cv-text-4',
+                    labels: ['YOLO11n 4.2ms GPU ONNX', 'FPS: 60.0 REAL-TIME', 'CUDA INFERENCE CORE', 'EDGE ACCELERATION'],
+                    minX: 920, maxX: 1380, minY: 500, maxY: 750, baseSpeed: 2100
+                }
+            ];
+
+            reticleData.forEach(r => {
+                let step = 0;
+                const scheduleMove = () => {
+                    const el = document.getElementById(r.id);
+                    const txt = document.getElementById(r.textId);
+                    if (el) {
+                        const nextX = Math.floor(Math.random() * (r.maxX - r.minX)) + r.minX;
+                        const nextY = Math.floor(Math.random() * (r.maxY - r.minY)) + r.minY;
+                        const labelText = r.labels[step % r.labels.length];
+                        step++;
+
+                        el.setAttribute('transform', `translate(${nextX}, ${nextY})`);
+                        if (txt) {
+                            txt.textContent = `${labelText} [X:${nextX} Y:${nextY}]`;
+                        }
+                    }
+                    const randomDelay = r.baseSpeed + (Math.random() * 900 - 450);
+                    setTimeout(scheduleMove, randomDelay);
+                };
+                setTimeout(scheduleMove, Math.random() * 800);
+            });
+        })();
+
+        // 2. 10-Second Loading Progress Sequence (10000ms)
+        (function runStandaloneLoadingSequence() {
+            const progressBar = document.getElementById('loading-progress-bar');
+            const percentageText = document.getElementById('loading-percentage-text');
+            const statusText = document.getElementById('loading-status-text');
+
+            const steps = [
+                { pct: 10, time: 1000, status: "Reading System Configurations..." },
+                { pct: 25, time: 2500, status: "Initializing ONNX Runtime Engine & Tensor Core..." },
+                { pct: 45, time: 4500, status: "Connecting to MongoDB Atlas Cloud Database..." },
+                { pct: 65, time: 6500, status: "Loading YOLOv11 Neural Object Detection Weights..." },
+                { pct: 82, time: 8200, status: "Initializing Smart AC Controller ..." },
+                { pct: 95, time: 9500, status: "Starting Real-time Inference Worker & Web Server..." },
+                { pct: 100, time: 10000, status: "System Initialization Complete. Launching Dashboard..." }
+            ];
+
+            let currentStep = 0;
+            let startTime = Date.now();
+            const totalDuration = 10000; // Exact 10 Seconds
+
+            const timer = setInterval(() => {
+                let elapsed = Date.now() - startTime;
+                let progressPct = Math.min(100, Math.floor((elapsed / totalDuration) * 100));
+
+                if (progressBar) progressBar.style.width = progressPct + '%';
+                if (percentageText) percentageText.innerText = progressPct + '%';
+
+                if (currentStep < steps.length && elapsed >= steps[currentStep].time) {
+                    let step = steps[currentStep];
+                    if (statusText) statusText.innerText = step.status;
+                    currentStep++;
+                }
+
+                if (elapsed >= totalDuration) {
+                    clearInterval(timer);
+                    setTimeout(() => {
+                        window.location.href = "/dashboard";
+                    }, 600);
+                }
+            }, 40);
+        })();
+    </script>
+</body>
+</html>

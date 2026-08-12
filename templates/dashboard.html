@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Cooling Edge AI - Enterprise Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#070a11',
+                        panelBg: 'rgba(11, 19, 32, 0.88)',
+                        panelBorder: 'rgba(20, 184, 166, 0.2)',
+                        accentCyan: '#06b6d4',
+                        accentGreen: '#10b981',
+                        accentAmber: '#f59e0b',
+                        accentRose: '#f43f5e',
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body, *, input, button, select, option, textarea { font-family: 'Share Tech Mono', 'JetBrains Mono', monospace !important; }
+        body { background-color: #05080e; color: #f3f4f6; }
+        .font-mono { font-family: 'Share Tech Mono', 'JetBrains Mono', monospace !important; }
+        .glass-panel {
+            background: rgba(11, 19, 32, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(20, 184, 166, 0.18);
+        }
+        .glass-panel-glow {
+            background: rgba(11, 19, 32, 0.92);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(6, 182, 212, 0.35);
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.08);
+        }
+        
+        /* Turbine Fan Rotor Animation */
+        @keyframes spin-rotor {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .turbine-rotor-spinning {
+            animation: spin-rotor var(--spin-duration, 1.2s) linear infinite;
+            transform-origin: center;
+        }
+        
+        /* SVG Gauge Progress Transitions */
+        .gauge-meter-path {
+            transition: stroke-dashoffset 0.8s ease-in-out, stroke 0.5s ease;
+        }
+
+        /* Pulse glow for active status */
+        @keyframes cyan-pulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.08); }
+        }
+        .pulse-active { animation: cyan-pulse 2s infinite ease-in-out; }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex bg-[#05080e]">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-16 h-full glass-panel border-r border-teal-500/15 flex flex-col items-center py-5 z-50">
+        <div class="flex flex-col items-center gap-6">
+            <nav class="flex flex-col gap-3 text-gray-400 mt-1">
+                <a href="/dashboard" class="p-2.5 rounded-xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 transition-all shadow-md shadow-cyan-500/10" title="Dashboard"><i data-lucide="layout-dashboard" class="w-5 h-5"></i></a>
+                <a href="/nodes" class="p-2.5 rounded-xl hover:text-white hover:bg-white/5 transition-all" title="Edge Nodes"><i data-lucide="cpu" class="w-5 h-5"></i></a>
+                <a href="/analytics" class="p-2.5 rounded-xl hover:text-white hover:bg-white/5 transition-all" title="Analytics"><i data-lucide="bar-chart-3" class="w-5 h-5"></i></a>
+                <a href="/settings" class="p-2.5 rounded-xl hover:text-white hover:bg-white/5 transition-all" title="Settings"><i data-lucide="settings" class="w-5 h-5"></i></a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="flex-1 h-full flex flex-col overflow-hidden">
+
+        <!-- Top Header (Prominent Larger Header Bar) -->
+        <header class="h-16 glass-panel border-b border-teal-500/20 px-6 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-4">
+                <h2 class="text-base font-extrabold text-white tracking-wider font-mono flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-900/90 border-2 border-cyan-400/70 shadow-[0_0_16px_rgba(6,182,212,0.6)] flex items-center justify-center p-1.5 overflow-hidden shrink-0 transition-transform hover:scale-105">
+                        <img src="{{ url_for('static', filename='logo_emblem.png') }}" class="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(6,182,212,0.9)]" alt="Logo">
+                    </div>
+                    <span class="font-extrabold tracking-wider text-lg"><span class="text-[#f8bc86] drop-shadow-[0_0_10px_rgba(248,188,134,0.6)]">THERMO</span><span class="text-[#68c2dc] drop-shadow-[0_0_10px_rgba(104,194,220,0.6)]">EDGEVISION</span></span> <span class="text-[#68c2dc]/80 font-normal text-xs sm:text-sm">| Edge Intelligence for Smarter Cooling </span>
+                </h2>
+                <div class="hidden lg:flex items-center gap-2 text-xs font-mono text-cyan-400 bg-cyan-500/10 px-3.5 py-1 rounded-full border border-cyan-500/25">
+                    <span>YOLO11n ONNX GPU</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <input type="file" id="videoUploadInput" class="hidden" accept="video/*" onchange="uploadVideo(this)">
+                <button onclick="document.getElementById('videoUploadInput').click()" class="px-3.5 py-1.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-300 text-xs font-mono transition-all flex items-center gap-1.5 cursor-pointer shadow-sm">
+                    <i data-lucide="upload" class="w-4 h-4"></i> Upload Stream
+                </button>
+                <button onclick="stopStream()" class="px-3.5 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-mono transition-all flex items-center gap-1.5 cursor-pointer shadow-sm" title="Stop Stream & Delete Temp File">
+                    <i data-lucide="square" class="w-4 h-4"></i> Stop Stream
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-4 grid grid-cols-12 gap-4 overflow-hidden">
+
+            <!-- Left Col: Live Stream & Telemetry (Col 7) -->
+            <div class="col-span-7 flex flex-col gap-3.5 h-full overflow-hidden">
+                
+                <!-- Video Display Frame -->
+                <div class="glass-panel-glow rounded-2xl p-3.5 border border-teal-500/25 flex flex-col flex-1 relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-2 z-10">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-cyan-400 font-mono tracking-wider">LIVE STREAM</span>
+                            <span class="text-[9px] text-gray-400 font-mono px-2 py-0.5 bg-black/40 rounded border border-cyan-500/10">POWERED BY YOLO11n</span>
+                        </div>
+                        <span class="px-2.5 py-0.5 rounded bg-rose-500/15 text-rose-400 text-[10px] font-mono font-bold border border-rose-500/30 flex items-center gap-1.5 shadow-sm shadow-rose-500/20">
+                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>SYSTEM ONLINE
+                        </span>
+                    </div>
+
+                    <!-- Video Container -->
+                    <div class="relative flex-1 w-full rounded-xl bg-black/95 border border-teal-500/20 overflow-hidden flex items-center justify-center min-h-0 shadow-inner">
+                        <img src="{{ url_for('video_feed') }}" class="absolute inset-0 w-full h-full object-cover" alt="Live Stream">
+                        <div class="absolute bottom-2 left-2 px-2.5 py-1 bg-black/70 backdrop-blur-md rounded-md border border-cyan-500/20 text-[10px] font-mono text-cyan-300 flex items-center gap-2">
+                            <span id="video-overlay-dot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            <span id="video-overlay-text">STREAM SOURCE ACTIVE</span>
+                        </div>
+                    </div>
+
+                    <!-- Mode Selector Bar (Reflecting Backend YAML Rule State) -->
+                    <div class="mt-3 flex items-center justify-between gap-2 font-mono text-xs border-t border-teal-500/15 pt-2.5">
+                        <span class="text-[10px] text-gray-400 tracking-wider">AC MODE:</span>
+                        <div class="flex items-center gap-1.5 flex-1 justify-end" id="mode-pills-container">
+                            <span id="pill-baseline" class="px-2.5 py-1 rounded-lg text-[10px] font-bold border border-slate-700 bg-slate-800/40 text-slate-400 transition-all">BASELINE</span>
+                            <span id="pill-alternate" class="px-2.5 py-1 rounded-lg text-[10px] font-bold border border-slate-700 bg-slate-800/40 text-slate-400 transition-all">ALTERNATE</span>
+                            <span id="pill-normal" class="px-2.5 py-1 rounded-lg text-[10px] font-bold border border-slate-700 bg-slate-800/40 text-slate-400 transition-all">NORMAL</span>
+                            <span id="pill-active" class="px-2.5 py-1 rounded-lg text-[10px] font-bold border border-slate-700 bg-slate-800/40 text-slate-400 transition-all">ACTIVE</span>
+                            <span id="pill-turbo" class="px-2.5 py-1 rounded-lg text-[10px] font-bold border border-slate-700 bg-slate-800/40 text-slate-400 transition-all">TURBO</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-cards Row 1: Target Temp, Latency, Mode -->
+                <div class="grid grid-cols-3 gap-3 shrink-0 font-mono">
+                    <div class="glass-panel p-2.5 rounded-xl border border-teal-500/20 text-center flex flex-col justify-center">
+                        <div class="text-[9px] text-gray-400 tracking-wider">TARGET TEMP</div>
+                        <div class="text-sm font-bold text-cyan-300 mt-0.5" id="target-temp-display">-- - --°C</div>
+                    </div>
+                    <div class="glass-panel p-2.5 rounded-xl border border-teal-500/20 text-center flex flex-col justify-center">
+                        <div class="text-[9px] text-gray-400 tracking-wider">LATENCY</div>
+                        <div class="text-sm font-bold text-emerald-400 mt-0.5" id="latency-display">-- ms</div>
+                    </div>
+                    <div class="glass-panel p-2.5 rounded-xl border border-teal-500/20 text-center flex flex-col justify-center">
+                        <div class="text-[9px] text-gray-400 tracking-wider">SYSTEM MODE</div>
+                        <div class="text-sm font-bold text-amber-400 uppercase mt-0.5" id="mode-display">--</div>
+                    </div>
+                </div>
+
+                <!-- Sub-cards Row 2: Uptime & Occupancy Level -->
+                <div class="grid grid-cols-2 gap-3 shrink-0">
+                    <div class="glass-panel rounded-xl p-3 border border-teal-500/20 font-mono flex flex-col justify-between">
+                        <div class="text-[10px] text-gray-400 tracking-wider mb-1">SYSTEM UPTIME</div>
+                        <div class="text-lg font-bold text-white tracking-wider font-mono" id="system-uptime-display">--d --:--:--</div>
+                        <div class="text-[9px] text-cyan-400 mt-1 truncate" id="hvac-desc-text">YAML Configuration Active</div>
+                    </div>
+                    <div class="glass-panel rounded-xl p-3 border border-teal-500/20 font-mono flex flex-col justify-between">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] text-gray-400 tracking-wider">OCCUPANCY LEVEL</span>
+                            <i data-lucide="users" class="w-3.5 h-3.5 text-cyan-400"></i>
+                        </div>
+                        <div id="occupancy-level-text" class="text-base font-extrabold text-amber-400 tracking-wide uppercase">--</div>
+                        <div class="w-full bg-black/60 rounded-full h-1.5 overflow-hidden border border-teal-500/15">
+                            <div id="occupancy-progress-bar" class="bg-gradient-to-r from-cyan-400 to-amber-400 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                        </div>
+                        <div id="occupancy-stats-text" class="text-[9px] text-gray-400">STUDENTS: 0/150 - 0%</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Col: Futuristic AC Radial Gauge Matrix (Col 5) -->
+            <div class="col-span-5 flex flex-col gap-3 h-full overflow-hidden">
+                <div class="glass-panel rounded-xl px-3.5 py-2 border border-teal-500/20 flex justify-between items-center shrink-0 font-mono text-xs">
+                    <span class="font-bold text-white tracking-wider flex items-center gap-2">
+                        <i data-lucide="fan" class="w-4 h-4 text-cyan-400"></i>
+                        4-GRID AC CONTROL MATRIX
+                    </span>
+                    <span id="matrix-active-tag" class="text-[10px] text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">4 ZONES ACTIVE</span>
+                </div>
+
+                <!-- 4 AC Cards Grid (With Circular Radial SVG Gauges & Turbine Blades) -->
+                <div class="grid grid-cols-2 gap-3 flex-1 min-h-0">
+                    
+                    <!-- AC Card 1 -->
+                    <div class="glass-panel rounded-2xl p-3 border border-teal-500/25 flex flex-col items-center justify-between relative overflow-hidden group">
+                        <!-- Top Bar -->
+                        <div class="w-full flex justify-between items-center font-mono">
+                            <span class="font-bold text-cyan-400 text-xs tracking-wider">AC 1</span>
+                            <span id="ac1-indicator" class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                        </div>
+
+                        <!-- Radial SVG Gauge Meter + Rotating Turbine Disc -->
+                        <div class="relative w-28 h-28 flex items-center justify-center my-1">
+                            <!-- Circular SVG Arc Gauge -->
+                            <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
+                                <!-- Background Dash Track -->
+                                <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(30, 41, 59, 0.6)" stroke-width="6" stroke-dasharray="4 3" />
+                                <!-- Dynamic Progress Arc -->
+                                <circle id="ac1-gauge-arc" class="gauge-meter-path" cx="60" cy="60" r="48" fill="none" stroke="#06b6d4" stroke-width="6" 
+                                        stroke-linecap="round" stroke-dasharray="301.59" stroke-dashoffset="301.59" 
+                                        style="filter: drop-shadow(0 0 4px rgba(6, 182, 212, 0.6));" />
+                            </svg>
+
+                            <!-- Center Rotating Turbine Blades -->
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <svg id="ac1-rotor-svg" class="w-16 h-16 text-cyan-400/80 turbine-rotor-spinning" viewBox="0 0 100 100" style="--spin-duration: 0s;">
+                                    <circle cx="50" cy="50" r="14" fill="rgba(6, 182, 212, 0.15)" stroke="currentColor" stroke-width="2"/>
+                                    <!-- 6 Curved Turbine Fan Blades -->
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(60 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(120 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(180 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(240 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(300 50 50)"/>
+                                    <circle cx="50" cy="50" r="6" fill="#06b6d4" />
+                                </svg>
+                            </div>
+
+                            <!-- Center Real System Status Display Overlay -->
+                            <div class="absolute inset-0 flex flex-col items-center justify-center font-mono text-center">
+                                <span id="ac1-center-val" class="text-xs font-extrabold text-cyan-300 tracking-wider">OFF</span>
+                                <span id="ac1-center-label" class="text-[8px] font-bold text-gray-400 tracking-widest uppercase">STANDBY</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer Sub-metrics -->
+                        <div class="w-full grid grid-cols-2 gap-1.5 text-center font-mono border-t border-teal-500/15 pt-2">
+                            <div class="bg-black/40 p-1 rounded-lg border border-teal-500/10">
+                                <div class="text-[8px] text-gray-400">FAN SPEED</div>
+                                <div id="ac1-fan" class="text-[11px] font-bold text-cyan-300 uppercase">OFF</div>
+                            </div>
+                            <div class="bg-black/40 p-1 rounded-lg border border-teal-500/10">
+                                <div class="text-[8px] text-gray-400">LOUVER</div>
+                                <div id="ac1-lvr" class="text-[11px] font-bold text-purple-300 uppercase">CLOSED</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AC Card 2 -->
+                    <div class="glass-panel rounded-2xl p-3 border border-teal-500/25 flex flex-col items-center justify-between relative overflow-hidden group">
+                        <div class="w-full flex justify-between items-center font-mono">
+                            <span class="font-bold text-cyan-400 text-xs tracking-wider">AC 2</span>
+                            <span id="ac2-indicator" class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                        </div>
+
+                        <div class="relative w-28 h-28 flex items-center justify-center my-1">
+                            <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
+                                <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(30, 41, 59, 0.6)" stroke-width="6" stroke-dasharray="4 3" />
+                                <circle id="ac2-gauge-arc" class="gauge-meter-path" cx="60" cy="60" r="48" fill="none" stroke="#06b6d4" stroke-width="6" 
+                                        stroke-linecap="round" stroke-dasharray="301.59" stroke-dashoffset="301.59" 
+                                        style="filter: drop-shadow(0 0 4px rgba(6, 182, 212, 0.6));" />
+                            </svg>
+
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <svg id="ac2-rotor-svg" class="w-16 h-16 text-cyan-400/80 turbine-rotor-spinning" viewBox="0 0 100 100" style="--spin-duration: 0s;">
+                                    <circle cx="50" cy="50" r="14" fill="rgba(6, 182, 212, 0.15)" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(60 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(120 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(180 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(240 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(300 50 50)"/>
+                                    <circle cx="50" cy="50" r="6" fill="#06b6d4" />
+                                </svg>
+                            </div>
+
+                            <div class="absolute inset-0 flex flex-col items-center justify-center font-mono text-center">
+                                <span id="ac2-center-val" class="text-xs font-extrabold text-cyan-300 tracking-wider">OFF</span>
+                                <span id="ac2-center-label" class="text-[8px] font-bold text-gray-400 tracking-widest uppercase">STANDBY</span>
+                            </div>
+                        </div>
+
+                        <div class="w-full grid grid-cols-2 gap-1.5 text-center font-mono border-t border-teal-500/15 pt-2">
+                            <div class="bg-black/40 p-1 rounded-lg border border-teal-500/10">
+                                <div class="text-[8px] text-gray-400">FAN SPEED</div>
+                                <div id="ac2-fan" class="text-[11px] font-bold text-cyan-300 uppercase">OFF</div>
+                            </div>
+                            <div class="bg-black/40 p-1 rounded-lg border border-teal-500/10">
+                                <div class="text-[8px] text-gray-400">LOUVER</div>
+                                <div id="ac2-lvr" class="text-[11px] font-bold text-purple-300 uppercase">CLOSED</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AC Card 3 -->
+                    <div class="glass-panel rounded-2xl p-3 border border-teal-500/25 flex flex-col items-center justify-between relative overflow-hidden group">
+                        <div class="w-full flex justify-between items-center font-mono">
+                            <span class="font-bold text-cyan-400 text-xs tracking-wider">AC 3</span>
+                            <span id="ac3-indicator" class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                        </div>
+
+                        <div class="relative w-28 h-28 flex items-center justify-center my-1">
+                            <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
+                                <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(30, 41, 59, 0.6)" stroke-width="6" stroke-dasharray="4 3" />
+                                <circle id="ac3-gauge-arc" class="gauge-meter-path" cx="60" cy="60" r="48" fill="none" stroke="#06b6d4" stroke-width="6" 
+                                        stroke-linecap="round" stroke-dasharray="301.59" stroke-dashoffset="301.59" 
+                                        style="filter: drop-shadow(0 0 4px rgba(6, 182, 212, 0.6));" />
+                            </svg>
+
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <svg id="ac3-rotor-svg" class="w-16 h-16 text-cyan-400/80 turbine-rotor-spinning" viewBox="0 0 100 100" style="--spin-duration: 0s;">
+                                    <circle cx="50" cy="50" r="14" fill="rgba(6, 182, 212, 0.15)" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(60 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(120 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(180 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(240 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(300 50 50)"/>
+                                    <circle cx="50" cy="50" r="6" fill="#06b6d4" />
+                                </svg>
+                            </div>
+
+                            <div class="absolute inset-0 flex flex-col items-center justify-center font-mono text-center">
+                                <span id="ac3-center-val" class="text-xs font-extrabold text-cyan-300 tracking-wider">OFF</span>
+                                <span id="ac3-center-label" class="text-[8px] font-bold text-gray-400 tracking-widest uppercase">STANDBY</span>
+                            </div>
+                        </div>
+
+                        <div class="w-full grid grid-cols-2 gap-1.5 text-center font-mono border-t border-teal-500/15 pt-2">
+                            <div class="bg-black/40 p-1 rounded-lg border border-teal-500/10">
+                                <div class="text-[8px] text-gray-400">FAN SPEED</div>
+                                <div id="ac3-fan" class="text-[11px] font-bold text-cyan-300 uppercase">OFF</div>
+                            </div>
+                            <div class="bg-black/40 p-1 rounded-lg border border-teal-500/10">
+                                <div class="text-[8px] text-gray-400">LOUVER</div>
+                                <div id="ac3-lvr" class="text-[11px] font-bold text-purple-300 uppercase">CLOSED</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AC Card 4 -->
+                    <div class="glass-panel rounded-2xl p-3 border border-teal-500/25 flex flex-col items-center justify-between relative overflow-hidden group">
+                        <div class="w-full flex justify-between items-center font-mono">
+                            <span class="font-bold text-cyan-400 text-xs tracking-wider">AC 4</span>
+                            <span id="ac4-indicator" class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                        </div>
+
+                        <div class="relative w-28 h-28 flex items-center justify-center my-1">
+                            <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
+                                <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(30, 41, 59, 0.6)" stroke-width="6" stroke-dasharray="4 3" />
+                                <circle id="ac4-gauge-arc" class="gauge-meter-path" cx="60" cy="60" r="48" fill="none" stroke="#06b6d4" stroke-width="6" 
+                                        stroke-linecap="round" stroke-dasharray="301.59" stroke-dashoffset="301.59" 
+                                        style="filter: drop-shadow(0 0 4px rgba(6, 182, 212, 0.6));" />
+                            </svg>
+
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <svg id="ac4-rotor-svg" class="w-16 h-16 text-cyan-400/80 turbine-rotor-spinning" viewBox="0 0 100 100" style="--spin-duration: 0s;">
+                                    <circle cx="50" cy="50" r="14" fill="rgba(6, 182, 212, 0.15)" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(60 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(120 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(180 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(240 50 50)"/>
+                                    <path d="M 50 36 C 45 20, 55 10, 50 5 C 45 10, 48 25, 50 36" fill="currentColor" opacity="0.85" transform="rotate(300 50 50)"/>
+                                    <circle cx="50" cy="50" r="6" fill="#06b6d4" />
+                                </svg>
+                            </div>
+
+                            <div class="absolute inset-0 flex flex-col items-center justify-center font-mono text-center">
+                                <span id="ac4-center-val" class="text-xs font-extrabold text-cyan-300 tracking-wider">OFF</span>
+                                <span id="ac4-center-label" class="text-[8px] font-bold text-gray-400 tracking-widest uppercase">STANDBY</span>
+                            </div>
+                        </div>
+
+                        <div class="w-full grid grid-cols-2 gap-1.5 text-center font-mono border-t border-teal-500/15 pt-2">
+                            <div class="bg-black/40 p-1 rounded-lg border border-teal-500/10">
+                                <div class="text-[8px] text-gray-400">FAN SPEED</div>
+                                <div id="ac4-fan" class="text-[11px] font-bold text-cyan-300 uppercase">OFF</div>
+                            </div>
+                            <div class="bg-black/40 p-1 rounded-lg border border-teal-500/10">
+                                <div class="text-[8px] text-gray-400">LOUVER</div>
+                                <div id="ac4-lvr" class="text-[11px] font-bold text-purple-300 uppercase">CLOSED</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Hardware Telemetry Footer Widget -->
+                <div class="glass-panel rounded-xl p-3 border border-teal-500/20 font-mono text-xs shrink-0 flex flex-col gap-1.5">
+                    <div class="flex justify-between items-center text-[10px] text-gray-400 border-b border-teal-500/15 pb-1">
+                        <span class="tracking-wider flex items-center gap-1.5"><i data-lucide="cpu" class="w-3 h-3 text-cyan-400"></i> EDGE HARDWARE PERFORMANCE</span>
+                        <a href="/nodes" class="text-cyan-400 hover:underline">Live Metrics</a>
+                    </div>
+                    <div class="flex justify-between"><span class="text-gray-400">CPU Usage</span><span class="text-emerald-400 font-bold" id="cpu-usg">-</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">GPU Usage</span><span class="text-amber-400 font-bold" id="gpu_usg">-</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">GPU Temp</span><span class="text-rose-400 font-bold" id="gpu_temp">-</span></div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript Data Logic -->
+    <script>
+        lucide.createIcons();
+
+        // Total Circumference for SVG gauge circle r=48 -> 2 * PI * 48 = ~301.59
+        const CIRCUMFERENCE = 301.59;
+
+        // Authentic System Fan Speed Mapping (Intensity % & Spin Speed Duration)
+        const FAN_SPEED_MAP = {
+            'OFF': { fillRatio: 0, duration: '0s', label: 'STANDBY', intensity: 'OFF' },
+            'LOW': { fillRatio: 0.35, duration: '2.5s', label: 'LOW', intensity: '35%' },
+            'MED': { fillRatio: 0.60, duration: '1.4s', label: 'MEDIUM', intensity: '60%' },
+            'MEDIUM': { fillRatio: 0.60, duration: '1.4s', label: 'MEDIUM', intensity: '60%' },
+            'HIGH': { fillRatio: 0.80, duration: '0.7s', label: 'HIGH', intensity: '80%' },
+            'MAX': { fillRatio: 1.0, duration: '0.35s', label: 'TURBO', intensity: '100%' },
+            'TURBO': { fillRatio: 1.0, duration: '0.35s', label: 'TURBO', intensity: '100%' }
+        };
+
+        // Louver position display mapping
+        const LOUVER_ANGLE_MAP = {
+            'down': 'DOWN',
+            'swing': 'SWING',
+            'horizontal': 'HORIZ',
+            'all_swing_fresh_air': 'FRESH AIR',
+            'closed': 'CLOSED'
+        };
+
+        async function updateDashboard() {
+            try {
+                let res = await fetch('/api/status');
+                let data = await res.json();
+                
+                // 0. Stream Source Active / Standby Status Overlay Update
+                let overlayDot = document.getElementById('video-overlay-dot');
+                let overlayText = document.getElementById('video-overlay-text');
+                if (data.is_stream_active) {
+                    if (overlayDot) overlayDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+                    if (overlayText) overlayText.innerText = data.stream_status_text || "STREAM SOURCE ACTIVE";
+                } else {
+                    if (overlayDot) overlayDot.className = "w-2 h-2 rounded-full bg-amber-400 animate-pulse";
+                    if (overlayText) overlayText.innerText = data.stream_status_text || "STANDBY (NO VIDEO SOURCE)";
+                }
+
+                // 1. Header AC Status Badge & Active Zones Count Tag
+                if (data.hvac) {
+                    if (data.hvac.ac_status_text) {
+                        let headerAc = document.getElementById('header-ac-status');
+                        if (headerAc) headerAc.innerText = (data.hvac.ac_status_text || 'HVAC MATRIX ACTIVE').toUpperCase();
+                    }
+                    let matrixTag = document.getElementById('matrix-active-tag');
+                    if (matrixTag) {
+                        let activeCnt = data.hvac.ac_active_count !== undefined ? data.hvac.ac_active_count : 4;
+                        matrixTag.innerText = `${activeCnt} ZONES ACTIVE`;
+                        matrixTag.className = activeCnt > 0 ? "text-[10px] text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20" : "text-[10px] text-rose-400 font-bold px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/20";
+                    }
+                }
+
+                // 2. System Uptime & Latency Dynamic Update
+                if (data.system_metrics) {
+                    let uptimeEl = document.getElementById('system-uptime-display');
+                    if (uptimeEl) uptimeEl.innerText = data.system_metrics.uptime || "N/A";
+                    
+                    let latencyEl = document.getElementById('latency-display');
+                    if (latencyEl) {
+                        latencyEl.innerText = (data.system_metrics.latency !== null && data.system_metrics.latency !== undefined) 
+                            ? data.system_metrics.latency : "N/A";
+                    }
+                }
+
+                // 3. Target Temp & Mode & Description Dynamic Update
+                if (data.hvac) {
+                    let tempMin = data.hvac.temp_min;
+                    let tempMax = data.hvac.temp_max;
+                    let targetTempEl = document.getElementById('target-temp-display');
+                    if (targetTempEl) {
+                        if (tempMin === 0 && tempMax === 0) {
+                            targetTempEl.innerText = "OFF (Energy Saver)";
+                        } else if (tempMin !== null && tempMin !== undefined && tempMax !== null && tempMax !== undefined) {
+                            targetTempEl.innerText = `${tempMin} - ${tempMax}°C`;
+                        } else {
+                            targetTempEl.innerText = "N/A";
+                        }
+                    }
+
+                    let modeEl = document.getElementById('mode-display');
+                    let activeMode = (data.hvac.ac_mode || '').toLowerCase();
+                    if (modeEl) {
+                        modeEl.innerText = activeMode ? activeMode.toUpperCase() : "N/A";
+                    }
+
+                    let hvacDescEl = document.getElementById('hvac-desc-text');
+                    if (hvacDescEl) {
+                        hvacDescEl.innerText = data.hvac.ac_status_text || data.hvac.description || "YAML Config Synchronized";
+                    }
+
+                    // Dynamic Mode Pills Highlight (baseline, alternate, normal, active, turbo)
+                    ['baseline', 'alternate', 'normal', 'active', 'turbo'].forEach(mode => {
+                        let pill = document.getElementById(`pill-${mode}`);
+                        if (pill) {
+                            if (activeMode === mode || activeMode.includes(mode)) {
+                                pill.className = "px-2.5 py-1 rounded-lg text-[10px] font-extrabold border border-cyan-400/60 bg-cyan-500/25 text-cyan-300 shadow-md shadow-cyan-500/30 transition-all";
+                            } else {
+                                pill.className = "px-2.5 py-1 rounded-lg text-[10px] font-bold border border-slate-700 bg-slate-800/40 text-slate-400 transition-all opacity-60";
+                            }
+                        }
+                    });
+                }
+
+                // 4. Occupancy Update
+                if (document.getElementById('occupancy-level-text')) {
+                    document.getElementById('occupancy-level-text').innerText = (data.occupancy_level || "N/A").toUpperCase();
+                    document.getElementById('occupancy-stats-text').innerText = `STUDENTS: ${data.person_count}/${data.capacity} - ${data.occupancy_percentage}%`;
+                    document.getElementById('occupancy-progress-bar').style.width = `${data.occupancy_percentage}%`;
+                }
+
+                // 5. Update 4 AC Control Matrix Cards (Strict params.yaml ON/OFF logic per AC card)
+                if (data.ac_units && Array.isArray(data.ac_units)) {
+                    data.ac_units.forEach(unit => {
+                        let id = unit.id;
+                        let ind = document.getElementById(`ac${id}-indicator`);
+                        let gaugeArc = document.getElementById(`ac${id}-gauge-arc`);
+                        let rotorSvg = document.getElementById(`ac${id}-rotor-svg`);
+                        let centerVal = document.getElementById(`ac${id}-center-val`);
+                        let centerLabel = document.getElementById(`ac${id}-center-label`);
+                        let fanText = document.getElementById(`ac${id}-fan`);
+                        let lvrText = document.getElementById(`ac${id}-lvr`);
+
+                        let isUnitActive = (unit.status === 'ACTIVE');
+                        let rawSpeed = isUnitActive ? (unit.fan_speed || 'OFF').toUpperCase() : 'OFF';
+                        let spec = isUnitActive ? (FAN_SPEED_MAP[rawSpeed] || FAN_SPEED_MAP['MED']) : FAN_SPEED_MAP['OFF'];
+
+                        // Update Status Indicator Light (Green Glowing for Active, Dim Slate for Standby)
+                        if (ind) {
+                            if (isUnitActive) {
+                                ind.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/70 pulse-active";
+                            } else {
+                                ind.className = "w-2.5 h-2.5 rounded-full bg-slate-600 shadow-none";
+                            }
+                        }
+
+                        // Update SVG Circular Gauge Arc (Filled Cyan for Active, 0% Empty Slate for Standby)
+                        if (gaugeArc) {
+                            let strokeOffset = CIRCUMFERENCE * (1 - spec.fillRatio);
+                            gaugeArc.style.strokeDashoffset = strokeOffset;
+                            gaugeArc.setAttribute('stroke', isUnitActive ? '#06b6d4' : '#1e293b');
+                        }
+
+                        // Update Turbine Fan Rotor Spinning Speed (Fast/Med/Slow spin for Active, Static for Standby)
+                        if (rotorSvg) {
+                            if (isUnitActive && spec.fillRatio > 0) {
+                                rotorSvg.style.setProperty('--spin-duration', spec.duration);
+                                rotorSvg.setAttribute('class', 'w-16 h-16 text-cyan-400 turbine-rotor-spinning');
+                            } else {
+                                rotorSvg.style.setProperty('--spin-duration', '0s');
+                                rotorSvg.setAttribute('class', 'w-16 h-16 text-slate-600/40');
+                            }
+                        }
+
+                        // Update Center Text Overlay
+                        if (centerVal) {
+                            centerVal.innerText = isUnitActive ? spec.intensity : "OFF";
+                            centerVal.className = isUnitActive ? "text-xs font-extrabold text-cyan-300 tracking-wider" : "text-xs font-bold text-slate-600 tracking-wider";
+                        }
+                        if (centerLabel) {
+                            centerLabel.innerText = isUnitActive ? spec.label : "STANDBY";
+                            centerLabel.className = isUnitActive ? "text-[8px] font-bold text-cyan-400/80 tracking-widest uppercase" : "text-[8px] font-bold text-slate-600 tracking-widest uppercase";
+                        }
+
+                        // Update Sub-text labels
+                        if (fanText) {
+                            fanText.innerText = isUnitActive ? rawSpeed : "OFF";
+                            fanText.className = isUnitActive ? "text-[11px] font-bold text-cyan-300 uppercase" : "text-[11px] font-bold text-slate-600 uppercase";
+                        }
+                        if (lvrText) {
+                            let lvrKey = (unit.louver || 'closed').toLowerCase();
+                            lvrText.innerText = isUnitActive ? (LOUVER_ANGLE_MAP[lvrKey] || unit.louver.toUpperCase()) : "CLOSED";
+                            lvrText.className = isUnitActive ? "text-[11px] font-bold text-purple-300 uppercase" : "text-[11px] font-bold text-slate-600 uppercase";
+                        }
+                    });
+                }
+
+                // 6. Hardware Telemetry Widget Update
+                if (data.Machine_Performance) {
+                    let cpuUsgEl = document.getElementById('cpu-usg');
+                    if (cpuUsgEl) cpuUsgEl.innerText = data.Machine_Performance.cpu_usage || "-";
+
+                    let gpuUsgEl = document.getElementById('gpu_usg');
+                    if (gpuUsgEl) gpuUsgEl.innerText = data.Machine_Performance.gpu_usage || "-";
+
+                    let gpuTempEl = document.getElementById('gpu_temp');
+                    if (gpuTempEl) gpuTempEl.innerText = data.Machine_Performance.gpu_temp || "-";
+                }
+
+            } catch (err) {
+                console.error("API fetch error:", err);
+            }
+        }
+
+        // Run immediately on page load, then poll every 2 seconds
+        updateDashboard();
+        setInterval(updateDashboard, 2000);
+
+        async function uploadVideo(input) {
+            if (input.files && input.files[0]) {
+                let formData = new FormData();
+                formData.append('video', input.files[0]);
+                let res = await fetch('/api/upload_video', { method: 'POST', body: formData });
+                let result = await res.json();
+                if (result.success) {
+                    alert(result.message);
+                    location.reload();
+                }
+            }
+        }
+
+        async function stopStream() {
+            try {
+                let res = await fetch('/api/stop_stream', { method: 'POST' });
+                let result = await res.json();
+                if (result.success) {
+                    updateDashboard();
+                    location.reload();
+                }
+            } catch (e) {
+                console.error("Failed to stop stream:", e);
+            }
+        }
+    </script>
+</body>
+</html>

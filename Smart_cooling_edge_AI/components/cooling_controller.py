@@ -66,6 +66,7 @@ class CoolingController:
                 "ac_status_text": highest_rule["ac_status_text"],
                 "ac_active_count": highest_rule["ac_active_count"],
                 "ac_mode": highest_rule["ac_mode"],
+                "max_capacity": list(self.rules.values())[-1]["max_students"],
                 "temp_min": float(highest_rule["temp_min"]),
                 "temp_max": float(highest_rule["temp_max"]),
                 "fan_speed": highest_rule["fan_speed"],

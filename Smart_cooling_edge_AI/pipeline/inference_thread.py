@@ -1,5 +1,6 @@
-﻿import time
+import time
 import threading
+from concurrent.futures import ThreadPoolExecutor
 from Smart_cooling_edge_AI.components.model_predictor import run_detection
 from Smart_cooling_edge_AI.components.cooling_controller import CoolingController
 from Smart_cooling_edge_AI.utils.image_utils import save_annotated_frame
@@ -30,11 +31,14 @@ class InferenceWorker:
     def __init__(self, cooling_controller: CoolingController, interval_seconds: int):
         self._cooling_controller  = cooling_controller
         self._interval_seconds    = interval_seconds
+        self._executor = ThreadPoolExecutor(max_workers=2)
+        
 
         # Internal shared state
         self._latest_frame  = None
         self._latest_boxes  = []
         self._latest_count  = 0
+        self._latest_latency_ms = 0.0
 
         # Thread synchronisation
         self._frame_lock    = threading.Lock()
@@ -53,6 +57,11 @@ class InferenceWorker:
         """Called by the main thread -- returns (boxes, count) from latest inference."""
         with self._result_lock:
             return list(self._latest_boxes), self._latest_count
+
+    def get_latency(self) -> float:
+        """Called by main thread -- returns latest inference latency in ms."""
+        with self._result_lock:
+            return self._latest_latency_ms
 
     def start(self) -> None:
         """Launches the background inference daemon thread."""
@@ -93,17 +102,21 @@ class InferenceWorker:
                 time.sleep(0.01)
                 continue
 
-            # YOLO inference
+            # YOLO inference timing
+            t0 = time.time()
             try:
                 detected_boxes, person_count = run_detection(frame)
             except Exception as e:
                 logger.error(f"run_detection failed: {str(e)}", exc_info=True)
                 detected_boxes, person_count = [], 0
+            t1 = time.time()
+            latency_ms = round((t1 - t0) * 1000, 1)
 
             # Update shared results for display thread
             with self._result_lock:
                 self._latest_boxes = detected_boxes
                 self._latest_count = person_count
+                self._latest_latency_ms = latency_ms
 
             # Interval: cooling control + frame save + DB log
             current_time = time.time()
@@ -113,7 +126,8 @@ class InferenceWorker:
                 try:
                     hvac_data = self._cooling_controller.regulate_cooling_system(person_count)
                     image_path, timestamp_str = save_annotated_frame(frame, detected_boxes, person_count, hvac_data)
-                    db_system_logging(person_count, hvac_data, image_path, timestamp_str)
+                    # Main AI thread runs without blocking by submitting DB logging to background executor thread pool
+                    self._executor.submit(db_system_logging, person_count, hvac_data, image_path, timestamp_str)
                 except Exception as e:
                     logger.error(f"Error during interval processing: {str(e)}", exc_info=True)
 

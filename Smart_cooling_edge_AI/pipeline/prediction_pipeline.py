@@ -31,14 +31,14 @@ class PredictionPipeline:
             # Extract configuration parameters safely with fallback defaults
             pipeline_config = config.get('PIPELINE_CONFIG', {})
 
-            self.video_source = video_source if video_source  is not None else pipeline_config.get('video_source', 0)
+            self.video_source = video_source if video_source is not None else pipeline_config.get('video_source', None)
             self.interval_seconds = interval_seconds if interval_seconds is not None else pipeline_config.get('interval_seconds', 300)
 
             logger.info(f"PredictionPipeline initialized | source: {self.video_source} | interval: {self.interval_seconds}s")
 
         except Exception as e:
             logger.critical(f"Failed to initialize PredictionPipeline: {str(e)}", exc_info=True)
-            self.video_source     = 0
+            self.video_source     = None
             self.interval_seconds = 5
 
         # Initialise CoolingController and pass it to the worker
@@ -81,7 +81,7 @@ class PredictionPipeline:
             annotated_frame = draw_boxes(frame,display_boxes )
 
             # Safely update the shared display frame cache
-            with self._frame_lock:# -------------------------------=============================================
+            with self._frame_lock:
                 self._current_display_frame = annotated_frame
 
         except Exception as e:
@@ -103,6 +103,13 @@ class PredictionPipeline:
 
 
 
+    @property
+    def cooling_controller(self):
+        return self._cooling_controller
+
+    @property
+    def latest_latency_ms(self) -> float:
+        return self._worker.get_latency()
 
     def get_latest_results(self) -> tuple:
         """Returns the latest (boxes, count) from the background worker."""

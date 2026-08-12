@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THERMOEDGEVISION | System & Model Configurations</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#f8bc86',
+                            cyan: '#68c2dc',
+                            teal: '#14b8a6',
+                            dark: '#05080e',
+                            card: '#0b111e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Share Tech Mono', 'monospace'],
+                        mono: ['Share Tech Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body, *, input, button, select, option, textarea {
+            font-family: 'Share Tech Mono', 'JetBrains Mono', monospace !important;
+        }
+        body {
+            background-color: #05080e;
+            color: #e2e8f0;
+        }
+        .glass-panel {
+            background: rgba(11, 17, 30, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(104, 194, 220, 0.15);
+        }
+        .glass-panel-glow {
+            background: rgba(11, 17, 30, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(104, 194, 220, 0.25);
+            box-shadow: 0 0 25px rgba(104, 194, 220, 0.08);
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex bg-[#05080e]">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-16 h-full glass-panel border-r border-teal-500/15 flex flex-col items-center py-5 z-50">
+        <div class="flex flex-col items-center gap-6">
+            <nav class="flex flex-col gap-3 text-gray-400 mt-1">
+                <a href="/dashboard" class="p-2.5 rounded-xl hover:text-white hover:bg-white/5 transition-all" title="Dashboard"><i data-lucide="layout-dashboard" class="w-5 h-5"></i></a>
+                <a href="/nodes" class="p-2.5 rounded-xl hover:text-white hover:bg-white/5 transition-all" title="Edge Nodes"><i data-lucide="cpu" class="w-5 h-5"></i></a>
+                <a href="/analytics" class="p-2.5 rounded-xl hover:text-white hover:bg-white/5 transition-all" title="Analytics"><i data-lucide="bar-chart-3" class="w-5 h-5"></i></a>
+                <a href="/settings" class="p-2.5 rounded-xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 transition-all shadow-md shadow-cyan-500/10" title="Settings"><i data-lucide="settings" class="w-5 h-5"></i></a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="flex-1 h-full flex flex-col overflow-hidden">
+
+        <!-- Top Header (Prominent Larger Header Bar) -->
+        <header class="h-16 glass-panel border-b border-teal-500/20 px-6 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-4">
+                <h2 class="text-base font-extrabold text-white tracking-wider font-mono flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-900/90 border-2 border-cyan-400/70 shadow-[0_0_16px_rgba(6,182,212,0.6)] flex items-center justify-center p-1.5 overflow-hidden shrink-0 transition-transform hover:scale-105">
+                        <img src="{{ url_for('static', filename='logo_emblem.png') }}" class="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(6,182,212,0.9)]" alt="Logo">
+                    </div>
+                    <span class="font-extrabold tracking-wider text-lg"><span class="text-[#f8bc86] drop-shadow-[0_0_10px_rgba(248,188,134,0.6)]">THERMO</span><span class="text-[#68c2dc] drop-shadow-[0_0_10px_rgba(104,194,220,0.6)]">EDGEVISION</span></span> <span class="text-[#68c2dc]/80 font-normal text-xs sm:text-sm">| System & Model Configuration Matrix </span>
+                </h2>
+                <div class="hidden lg:flex items-center gap-2 text-xs font-mono text-cyan-400 bg-cyan-500/10 px-3.5 py-1 rounded-full border border-cyan-500/25">
+                    <span>YOLO11n ONNX GPU</span>
+                </div>
+            </div>
+            
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-5 overflow-y-auto space-y-5 font-mono">
+
+            <!-- Section 1: Live Model Threshold Settings -->
+            <div class="glass-panel-glow rounded-2xl p-5 border border-cyan-500/30">
+                <div class="flex items-center justify-between border-b border-teal-500/15 pb-3 mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 rounded-lg bg-cyan-950/80 border border-cyan-400/60 text-cyan-400">
+                            <i data-lucide="sliders" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-extrabold text-white tracking-wider">YOLOv11n DETECTION THRESHOLDS</h3>
+                            <p class="text-xs text-gray-400 font-sans mt-0.5">Adjust confidence(score threshold) and NMS suppression thresholds live without restarting server</p>
+                        </div>
+                    </div>
+                    <button onclick="saveThresholds()" class="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/35 border border-cyan-400/50 text-cyan-300 text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-cyan-500/20">
+                        <i data-lucide="save" class="w-4 h-4"></i> Save & Apply
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- Confidence Threshold -->
+                    <div class="glass-panel p-4 rounded-xl border border-teal-500/20">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-xs font-bold text-white tracking-wider">CONFIDENCE THRESHOLD (SCORE)</label>
+                            <span id="conf-val" class="text-sm font-extrabold text-cyan-400 bg-cyan-950/80 px-2.5 py-0.5 rounded border border-cyan-500/30">0.15</span>
+                        </div>
+                        <input type="range" id="conf-range" min="0.05" max="0.95" step="0.01" value="0.15" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400" oninput="document.getElementById('conf-val').innerText = this.value">
+                        <p class="text-[11px] text-gray-500 font-sans mt-2">⚠️ CAUTION (SCORE): Lowering this threshold increases detection sensitivity for distant students, but setting it too low may cause false positives.</p>
+                    </div>
+
+                    <!-- NMS Threshold -->
+                    <div class="glass-panel p-4 rounded-xl border border-teal-500/20">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-xs font-bold text-white tracking-wider">NMS SUPPRESSION THRESHOLD</label>
+                            <span id="nms-val" class="text-sm font-extrabold text-emerald-400 bg-emerald-950/80 px-2.5 py-0.5 rounded border border-emerald-500/30">0.75</span>
+                        </div>
+                        <input type="range" id="nms-range" min="0.10" max="0.95" step="0.01" value="0.75" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400" oninput="document.getElementById('nms-val').innerText = this.value">
+                        <p class="text-[11px] text-gray-500 font-sans mt-2">⚠️ CAUTION (NMS): Controls overlapping box suppression. Higher values separate closely seated students, but setting it too high may cause duplicate detections.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2:Occupancy Rule Matrix (params.yaml) -->
+            <div class="glass-panel rounded-2xl p-5 border border-teal-500/20">
+                <div class="flex items-center gap-3 border-b border-teal-500/15 pb-3 mb-4">
+                    <div class="p-2 rounded-lg bg-slate-900 border border-slate-700 text-amber-400">
+                        <i data-lucide="shield-check" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">OCCUPANCY CONTROL RULES</h3>
+                        <p class="text-xs text-gray-400 font-sans mt-0.5">Preset rule matrix configurations</p>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b border-teal-500/20 text-gray-400">
+                                <th class="py-2.5 px-3">OCCUPANCY LEVEL</th>
+                                <th class="py-2.5 px-3">STUDENT RANGE</th>
+                                <th class="py-2.5 px-3">ACTIVE AC COUNT</th>
+                                <th class="py-2.5 px-3">AC MODE</th>
+                                <th class="py-2.5 px-3">TARGET TEMP RANGE</th>
+                                <th class="py-2.5 px-3">FAN SPEED</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-teal-500/10 text-gray-300">
+                            <tr class="hover:bg-white/5 transition-all">
+                                <td class="py-3 px-3 font-bold text-slate-400">EMPTY</td>
+                                <td class="py-3 px-3">0 Students</td>
+                                <td class="py-3 px-3 text-cyan-400 font-bold">1 AC ON</td>
+                                <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px] font-bold">BASELINE</span></td>
+                                <td class="py-3 px-3 text-emerald-400 font-bold">25.0 - 26.0 °C</td>
+                                <td class="py-3 px-3">LOW</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-all">
+                                <td class="py-3 px-3 font-bold text-cyan-300">LOW</td>
+                                <td class="py-3 px-3">1 - 20 Students</td>
+                                <td class="py-3 px-3 text-cyan-400 font-bold">2 ACs ON</td>
+                                <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 text-[10px] font-bold">ALTERNATE</span></td>
+                                <td class="py-3 px-3 text-emerald-400 font-bold">24.0 - 25.0 °C</td>
+                                <td class="py-3 px-3">LOW</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-all">
+                                <td class="py-3 px-3 font-bold text-emerald-300">MEDIUM</td>
+                                <td class="py-3 px-3">21 - 60 Students</td>
+                                <td class="py-3 px-3 text-cyan-400 font-bold">4 ACs ON</td>
+                                <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 text-[10px] font-bold">NORMAL</span></td>
+                                <td class="py-3 px-3 text-emerald-400 font-bold">22.0 - 23.0 °C</td>
+                                <td class="py-3 px-3">MEDIUM</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-all">
+                                <td class="py-3 px-3 font-bold text-amber-300">HIGH</td>
+                                <td class="py-3 px-3">61 - 110 Students</td>
+                                <td class="py-3 px-3 text-cyan-400 font-bold">4 ACs ON</td>
+                                <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-amber-950 text-amber-300 text-[10px] font-bold">ACTIVE</span></td>
+                                <td class="py-3 px-3 text-emerald-400 font-bold">20.0 - 21.0 °C</td>
+                                <td class="py-3 px-3">HIGH</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-all">
+                                <td class="py-3 px-3 font-bold text-rose-300">FULL</td>
+                                <td class="py-3 px-3">111 - 150 Students</td>
+                                <td class="py-3 px-3 text-cyan-400 font-bold">4 ACs ON</td>
+                                <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-rose-950 text-rose-300 text-[10px] font-bold">TURBO</span></td>
+                                <td class="py-3 px-3 text-emerald-400 font-bold">17.0 - 19.0 °C</td>
+                                <td class="py-3 px-3">MAX</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        async function loadConfig() {
+            try {
+                let res = await fetch('/api/get_model_config');
+                let data = await res.json();
+                if (data.confidence_threshold !== undefined) {
+                    document.getElementById('conf-range').value = data.confidence_threshold;
+                    document.getElementById('conf-val').innerText = data.confidence_threshold;
+                }
+                if (data.nms_threshold !== undefined) {
+                    document.getElementById('nms-range').value = data.nms_threshold;
+                    document.getElementById('nms-val').innerText = data.nms_threshold;
+                }
+            } catch (e) {
+                console.error("Config fetch error:", e);
+            }
+        }
+
+        async function saveThresholds() {
+            let conf = parseFloat(document.getElementById('conf-range').value);
+            let nms = parseFloat(document.getElementById('nms-range').value);
+
+            try {
+                let res = await fetch('/api/update_model_config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ confidence_threshold: conf, nms_threshold: nms })
+                });
+                let result = await res.json();
+                if (result.success) {
+                    alert("Model thresholds updated successfully in memory and params.yaml!");
+                } else {
+                    alert("Failed to update threshold: " + result.error);
+                }
+            } catch (e) {
+                alert("Error saving config: " + e);
+            }
+        }
+
+        loadConfig();
+    </script>
+</body>
+</html>

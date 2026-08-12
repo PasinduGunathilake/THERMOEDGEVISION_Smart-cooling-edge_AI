@@ -43,7 +43,7 @@ def preprocess(frame, new_shape=None):
         brightness = np.mean(frame_gray)
 
         if brightness < 80:
-            logger.info(f"Low brightness detected ({brightness:.2f}). Applying CLAHE enhancement.")
+            logger.debug(f"Low brightness detected ({brightness:.2f}). Applying CLAHE enhancement.")
             lab = cv2.cvtColor(frame_rgb, cv2.COLOR_RGB2LAB)
             l, a, b = cv2.split(lab)
 
