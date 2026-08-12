@@ -1,72 +1,80 @@
-#Logs File Path
-LOG_FILE_PATH: "logs/system_execution.log"
-
-# AI Model & Inference Parameters
-MODEL_CONFIG:
-  confidence_threshold: 0.10
-  nms_threshold: 0.75
-  img_size: 640
-  model_path: "models/yolo11m.onnx"
-  model_weights_name: "yolo11m.pt"
-  #export_format: "onnx"
-
-# Pipeline & Storage Parameters
-PIPELINE_CONFIG:
-  video_source: 0
-  interval_seconds: 300
-  frame_save_dir: "Frame_captures"
-
-# Cooling Automation Rules 
-# AC Control Rules Matrix (Based on Student Occupancy)
 AC_CONTROL_RULES:
-  low_occupancy:
+  empty_occupancy:
+    ac_active_count: 1
+    ac_mode: baseline
+    ac_status_text: AC 1 ON (Baseline Ventilation)
+    description: EMPTY (Baseline Ventilation - 1 AC ON)
+    fan_speed: low
+    louver_position: down
+    max_students: 0
     min_students: 0
-    max_students: 20
-    occupancy_level: "low"
-    ac_status_text: "AC 2 ON (Alternate)"
-    ac_active_count: 2
-    ac_mode: "alternate"
-    temp_min: 24.0
-    temp_max: 25.0
-    fan_speed: "low"
-    louver_position: "down"
-    description: "LOW (Pre-lecture / Small group)"
-
-  medium_occupancy:
-    min_students: 21
-    max_students: 60
-    occupancy_level: "medium"
-    ac_status_text: "AC 4 ON (Normal)"
-    ac_active_count: 4
-    ac_mode: "normal"
-    temp_min: 22.0
-    temp_max: 23.0
-    fan_speed: "medium"
-    louver_position: "swing"
-    description: "MEDIUM (Half filled)"
-
-  high_occupancy:
-    min_students: 61
-    max_students: 110
-    occupancy_level: "high"
-    ac_status_text: "AC 4 ON (Active)"
-    ac_active_count: 4
-    ac_mode: "active"
-    temp_min: 20.0
-    temp_max: 21.0
-    fan_speed: "high"
-    louver_position: "horizontal"
-    description: "HIGH (Well filled)"
-
+    occupancy_level: empty
+    temp_max: 26.0
+    temp_min: 25.0
   full_occupancy:
-    min_students: 111
-    max_students: 150  # or Maximum capacity 
-    occupancy_level: "full"
-    ac_status_text: "AC 4 ON (Full Power / Turbo)"
     ac_active_count: 4
-    ac_mode: "turbo"
-    temp_min: 17.0
+    ac_mode: turbo
+    ac_status_text: AC 4 ON (Full Power / Turbo)
+    description: FULL (Maximum capacity)
+    fan_speed: max
+    louver_position: all_swing_fresh_air
+    max_students: 150
+    min_students: 111
+    occupancy_level: full
     temp_max: 19.0
-    fan_speed: "max"
-    louver_position: "all_swing_fresh_air"
-    description: "FULL (Maximum capacity)"
+    temp_min: 17.0
+  high_occupancy:
+    ac_active_count: 4
+    ac_mode: active
+    ac_status_text: AC 4 ON (Active)
+    description: HIGH (Well filled)
+    fan_speed: high
+    louver_position: horizontal
+    max_students: 110
+    min_students: 61
+    occupancy_level: high
+    temp_max: 21.0
+    temp_min: 20.0
+  low_occupancy:
+    ac_active_count: 2
+    ac_mode: alternate
+    ac_status_text: AC 2 ON (Alternate)
+    description: LOW (Pre-lecture / Small group)
+    fan_speed: low
+    louver_position: down
+    max_students: 20
+    min_students: 1
+    occupancy_level: low
+    temp_max: 25.0
+    temp_min: 24.0
+  medium_occupancy:
+    ac_active_count: 4
+    ac_mode: normal
+    ac_status_text: AC 4 ON (Normal)
+    description: MEDIUM (Half filled)
+    fan_speed: medium
+    louver_position: swing
+    max_students: 60
+    min_students: 21
+    occupancy_level: medium
+    temp_max: 23.0
+    temp_min: 22.0
+LOG_FILE_PATH: logs/system_execution.log
+
+
+
+
+MODEL_CONFIG:
+  confidence_threshold: 0.15
+  img_size: 640
+  model_path: models/yolo11n.onnx
+  model_weights_name: yolo11n.pt
+  nms_threshold: 0.75
+
+  
+
+  
+PIPELINE_CONFIG:
+  frame_save_dir: Frame_captures
+  interval_seconds: 300
+  video_source: 0
