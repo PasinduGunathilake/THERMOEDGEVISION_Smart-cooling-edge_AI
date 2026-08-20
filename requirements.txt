@@ -3,17 +3,17 @@ flask==3.0.2
 flask_cors==4.0.0
 
 # OpenCV Headless (Lightweight and optimized for Docker Linux containers)
-opencv-python-headless==4.9.0.80
-# opencv-python==4.9.0.80
+#opencv-python-headless==4.9.0.80
+opencv-python==4.9.0.80
 
 # ONNX Runtime CPU (Uncomment onnxruntime_gpu if building with CUDA GPU container)
-onnxruntime>=1.16.0
-# onnxruntime_gpu==1.23.2
+#onnxruntime>=1.16.0
+onnxruntime_gpu==1.23.2
 
 # Development & Notebook environment (Not required inside production container)
 # ipykernel
 
-requests==2.31.0
+requests==2.32.0
 ipykernel
 ultralytics==8.4.115
 pymongo==4.17.0
