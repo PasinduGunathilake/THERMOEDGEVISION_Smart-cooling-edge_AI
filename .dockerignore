@@ -1,0 +1,25 @@
+# Virtual environments
+acvenv/
+venv/
+env/
+
+# Git & IDE configs
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Python cache & build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+build/
+dist/
+
+# Temporary files & logs
+temp_uploads/*
+Frame_captures/*
+logs/*
+.env
