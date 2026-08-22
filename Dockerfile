@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# System dependencies for OpenCV (lightweight headless libraries, no heavy C++ compilers)
+# System dependencies for OpenCV and video decoding
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     libgl1 \
@@ -14,11 +14,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxext6 \
     && rm -rf /var/lib/apt/lists/*
 
+# Install python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
+# Copy source files (Filtered by .dockerignore)
 COPY . .
+
+# Install local package
 RUN pip install --no-cache-dir -e .
 
 EXPOSE 5000
