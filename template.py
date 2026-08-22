@@ -31,19 +31,24 @@ list_of_dirnfiles = [
     
     # Root Level Files
     "models/model.onnx",
+    "raw_data/raw_frames", # store captured frames for anotate(Roboflow) yolo model finetuning
+    "raw_data/videos", # sample videos for copture frames to annotate and finetuning
     "notebooks/experiment.ipynb", # For research/ prototyping
-    "app.py",                 # Flask Backend & Dashboard Stream
-    "templates/dashboard.html",    # Main Dashboard & Live Feed
-    "templates/nodes.html",    # Edge Node & Hardware Telemetry
+    "notebooks/train_yolo11.ipynb", # model finetuning
+    "app.py",    # Flask Backend & Dashboard Stream
+    "templates/dashboard.html", # Main Dashboard & Live Feed
+    "templates/nodes.html", # Edge Node & Hardware Telemetry
     "templates/analytics.html", # Control & Occupancy logs Analytics
     "templates/settings.html", # System & Model Configurations
     "templates/loading.html", # Loading page
-    "params.yaml",            # Configuration (YAML params) management
+    "params.yaml",  # Configuration (YAML params) management
     "requirements.txt",
+    "extract_frames.py", # extract image frames from videos and store 
     "Dockerfile",
+    ".dockerignore",
     ".env",
     "setup.py",
-    "demo.py"                 # Test Componets working correct or not
+    "demo.py"  # Test Componets working correct or not
     #"resources"              # Sample images/videos (add manually)
     #"static"                # UI resources
 ]
