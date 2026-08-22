@@ -6,11 +6,18 @@ acvenv/
 __pycache__/
 *.pyc
 *.egg-info/
+build/
+dist/
+runs/*
 
-# Uploads & Captures
+# Uploads & Captures, Datasets
 temp_uploads/
+raw_data/
 Frame_captures/*
 !Frame_captures/.gitkeep
+Notebooks/*.ipynb_checkpoints
+Notebooks/smart_cooling_edge_ai-1
+Notebooks/yolo11n.pt
 
 # Models & Weights
 models/*.onnx
