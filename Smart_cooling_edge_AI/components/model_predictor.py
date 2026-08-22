@@ -61,30 +61,37 @@ MODEL_WEIGHTS_NAME = model_config.get('model_weights_name', 'yolo11n.pt')
 IMG_SIZE = model_config.get('img_size', 640)
 weights_path = onnx_path.parent / MODEL_WEIGHTS_NAME
 
+# old (without fine tuning)---------------------------------------
 
-# Model Download & ONNX export If Model does not exist
+# Model Download & ONNX export If Model does not exist (Commented out reference code)
+# if not os.path.exists(onnx_path):
+#     logger.warning(f"ONNX model not found at {onnx_path}. Attempting automatic download and export...")
+#     try:
+#         from ultralytics import YOLO
+#         
+#         # Load pre-trained YOLO11n Nano model (downloads 'yolo11n.pt' automatically if missing)
+#         logger.info(f"Loading pre-trained model weights from: {weights_path}")
+#         model = YOLO(str(weights_path))
+#         
+#         # Export to ONNX format
+#         logger.info(f"Exporting model to ONNX format with image size: {IMG_SIZE}")
+#         exported_file = model.export(format="onnx", imgsz=IMG_SIZE)
+#         
+#         # Move or rename the exported ONNX file to the target models directory
+#         if exported_file and os.path.exists(exported_file):
+#             import shutil
+#             if Path(exported_file).resolve() != onnx_path.resolve():
+#                 shutil.move(exported_file, str(onnx_path))
+#                 
+#         logger.info(f"ONNX model successfully generated and saved to: {onnx_path}")
+#     except Exception as e:
+#         logger.critical(f"Error during automatic model download/export: {str(e)}", exc_info=True)
+# ---------------------------------------------------------------
+
+# Check ONNX model file existence
 if not os.path.exists(onnx_path):
-    logger.warning(f"ONNX model not found at {onnx_path}. Attempting automatic download and export...")
-    try:
-        from ultralytics import YOLO
-        
-        # Load pre-trained YOLO11n Nano model (downloads 'yolo11n.pt' automatically if missing)
-        logger.info(f"Loading pre-trained model weights from: {weights_path}")
-        model = YOLO(str(weights_path))
-        
-        # Export to ONNX format
-        logger.info(f"Exporting model to ONNX format with image size: {IMG_SIZE}")
-        exported_file = model.export(format="onnx", imgsz=IMG_SIZE)
-        
-        # Move or rename the exported ONNX file to the target models directory
-        if exported_file and os.path.exists(exported_file):
-            import shutil
-            if Path(exported_file).resolve() != onnx_path.resolve():
-                shutil.move(exported_file, str(onnx_path))
-                
-        logger.info(f"ONNX model successfully generated and saved to: {onnx_path}")
-    except Exception as e:
-        logger.critical(f"Error during automatic model download/export: {str(e)}", exc_info=True)
+    logger.warning(f"ONNX model not found at {onnx_path}. Ensure the retrained model is exported to this location.")
+
 
 
 # Load ONNX Run Time session
