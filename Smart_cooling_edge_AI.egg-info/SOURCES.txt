@@ -1,3 +1,4 @@
+LICENSE
 README.md
 setup.py
 Smart_cooling_edge_AI/__init__.py

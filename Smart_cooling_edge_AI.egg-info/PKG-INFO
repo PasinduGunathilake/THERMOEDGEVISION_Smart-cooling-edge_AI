@@ -4,11 +4,12 @@ Version: 0.0.1
 Summary: An edge computer vision system for smart AC energy saving
 Author: Pasindu Gunathilake
 Author-email: pasindugunathilake144@gmail.com
+License-File: LICENSE
 Requires-Dist: flask==3.0.2
 Requires-Dist: flask-cors==4.0.0
 Requires-Dist: opencv-python==4.9.0.80
 Requires-Dist: numpy==1.26.4
-Requires-Dist: onnxruntime-gpu>=1.18.0
+Requires-Dist: onnxruntime-gpu==1.23.2
 Requires-Dist: requests==2.31.0
 Requires-Dist: ipykernel
 Requires-Dist: ultralytics==8.4.115
@@ -20,5 +21,6 @@ Requires-Dist: GPUtil==1.4.0
 Requires-Dist: psutil
 Dynamic: author
 Dynamic: author-email
+Dynamic: license-file
 Dynamic: requires-dist
 Dynamic: summary
