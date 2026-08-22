@@ -60,20 +60,12 @@ AC_CONTROL_RULES:
     temp_max: 23.0
     temp_min: 22.0
 LOG_FILE_PATH: logs/system_execution.log
-
-
-
-
 MODEL_CONFIG:
-  confidence_threshold: 0.15
+  confidence_threshold: 0.37
   img_size: 640
   model_path: models/yolo11n.onnx
   model_weights_name: yolo11n.pt
-  nms_threshold: 0.75
-
-  
-
-  
+  nms_threshold: 0.5
 PIPELINE_CONFIG:
   frame_save_dir: Frame_captures
   interval_seconds: 300
