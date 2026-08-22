@@ -23,3 +23,12 @@ temp_uploads/*
 Frame_captures/*
 logs/*
 .env
+
+# Heavy training notebooks, runs & raw model checkpoints (Uncomment for production Docker builds to keep image light)
+notebooks/
+runs/
+*.zip
+smart_cooling_edge_ai-*/
+models/*.pt
+!models/*.onnx
+
