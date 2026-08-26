@@ -1,12 +1,10 @@
 numpy==1.26.4
 flask==3.0.2
 flask_cors==4.0.0
-# Use OpenCV Headless (Lightweight and optimized for Docker Linux containers)
-#opencv-python-headless==4.9.0.80
-opencv-python==4.9.0.80
-#onnxruntime>=1.16.0
-# ONNX Runtime CPU (Uncomment onnxruntime_gpu if building with CUDA GPU container)
-onnxruntime_gpu==1.23.2
+#opencv-python-headless==4.9.0.80 # Use OpenCV Headless (Use when using deployment with Docker containers)
+opencv-python==4.9.0.80 # Use OpenCV (Use when using deployment without Docker containers)
+#onnxruntime>=1.16.0 # ONNX Runtime CPU (Uncomment without gpu)
+onnxruntime_gpu==1.23.2 # ONNX Runtime with GPU (Uncomment without cpu)
 requests==2.32.0
 ipykernel
 ultralytics==8.4.115
@@ -16,3 +14,10 @@ python-dotenv
 werkzeug
 GPUtil==1.4.0
 psutil
+# yolo model hyperparameter tuning and MLOps experiment tracking and graphs
+mlflow>=2.10.0
+optuna>=3.5.0
+plotly>=5.18.0
+# when you want do faster yolo model training in ipynb file (finetuning, transfer learning or hyperparameter tuning) use GPU acceleration if you have haraware capabilities
+#--extra-index-url https://download.pytorch.org/whl/cu121
+#torch==2.5.1+cu121
