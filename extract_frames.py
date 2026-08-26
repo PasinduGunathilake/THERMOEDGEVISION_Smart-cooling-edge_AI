@@ -4,8 +4,8 @@ from pathlib import Path
 
 
 # frame configurations
-INPUT_VIDEOS_DIR = "raw_data/videos"# Folder path containing your video files
-OUTPUT_FRAMES_DIR = "raw_data/raw_frames" # Folder where extracted image frames will be saved
+INPUT_VIDEOS_DIR = "./notebooks/raw_data/videos"# Folder path containing your video files
+OUTPUT_FRAMES_DIR = "./notebooks/raw_data/raw_frames" # Folder where extracted image frames will be saved
 FRAME_INTERVAL = 300  # Frame sampling rate (e.g. 30 = 1 frame per sec for 30 FPS video)
 VIDEO_EXTENSIONS = ('.mp4', '.avi', '.mkv', '.mov', '.webm', '.MOV', '.MP4') # Supported formats
 
