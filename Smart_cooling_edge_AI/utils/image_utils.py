@@ -99,7 +99,7 @@ def draw_boxes(frame, boxes: list):
         cv2.rectangle(display_frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
         # Confidence label
-        label        = f"confidence: {conf:.2f}"
+        label        = f"student: {conf:.2f}"
         font_scale   = 0.6
         font_thick   = 2
 
