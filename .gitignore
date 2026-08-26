@@ -1,31 +1,28 @@
-# Environment
 acvenv/
 .env
-
-# Python Cache & Build
 __pycache__/
 *.pyc
 *.egg-info/
 build/
 dist/
-runs/*
-
-# Uploads & Captures, Datasets
 temp_uploads/
 raw_data/
 Frame_captures/*
 !Frame_captures/.gitkeep
-Notebooks/*.ipynb_checkpoints
-Notebooks/smart_cooling_edge_ai-1
-Notebooks/yolo11n.pt
-
-# Models & Weights
+notebooks/*.ipynb_checkpoints
+notebooks/smart_cooling_edge_ai-1
+notebooks/yolo11n.pt
+notebooks/hpo_experiments/Final_Best_Model/weights/
+notebooks/hpo_experiments/HPO_Trials/optuna_trial_0/weights
+notebooks/hpo_experiments/HPO_Trials/optuna_trial_1/weights
+notebooks/hpo_experiments/HPO_Trials/optuna_trial_2/weights
+notebooks/hpo_experiments/HPO_Trials/optuna_trial_3/weights
+notebooks/hpo_experiments/HPO_Trials/optuna_trial_4/weights
+notebooks/mlruns/0
+mlflow.db
 models/*.onnx
-models/*.pt
-
-# Logs
+notebooks/*.pt
 logs/
 *.log
-
-# IDE Config
 .vscode/
+SYSTEM_ARCHITECTURE.md
