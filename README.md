@@ -421,7 +421,7 @@ docker run -d -p 5000:5000 --env-file .env --name smart-cooling-app smart-coolin
 - **Education**: BSc. Computer Science Undergraduate, University of Jaffna, Sri Lanka.
 - **Email**: [pasindugunatilake144@gmail.com](mailto:pasindugunatilake144@gmail.com)
 - **Portfolio**: [https://pasindugunathilake.github.io/Portfolio-PG](https://pasindugunathilake.github.io/Portfolio-PG)
-- **Focus Areas**: AI/ML (Deep Learning & Computer Vision) Systems, Edge AI Architectures, RAG Systems, Full-Stack Development.
+- **Focus Areas**: AI/ML (Deep Learning & Computer Vision) Systems, System Architectures, RAG Systems, Full-Stack Development.
 
 ---
 
